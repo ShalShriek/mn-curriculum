@@ -1,1 +1,1 @@
-# mn-curriculum
+# curriculum mapping
