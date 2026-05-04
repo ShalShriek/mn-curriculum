@@ -157,6 +157,90 @@
     font-weight: 700;
   }
 
+  /* ---------- Reports: Scope toggle + leveling buttons + multi-pick chips ---------- */
+  .scope-toggle {
+    display: inline-flex;
+    background: #fff;
+    border: 1.5px solid var(--brand-cream);
+    border-radius: 9999px;
+    padding: 3px;
+  }
+  .scope-toggle .opt {
+    padding: 6px 16px; font-size: 12px; font-weight: 600;
+    color: var(--brand-muted); cursor: pointer; border-radius: 9999px;
+    transition: background 0.12s, color 0.12s;
+    user-select: none;
+  }
+  .scope-toggle .opt.active { background: var(--brand-primary); color: #fff; }
+  .scope-toggle .opt:not(.active):hover { color: var(--brand-primary); }
+
+  .lev-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+  .lev-btn {
+    background: #fff;
+    border: 1px solid var(--brand-cream);
+    border-left: 4px solid var(--brand-primary);
+    color: var(--brand-text);
+    padding: 10px 16px; border-radius: 6px;
+    font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: box-shadow 0.12s, transform 0.06s;
+    display: inline-flex; align-items: center; gap: 8px; text-align: left;
+  }
+  .lev-btn:hover { box-shadow: 0 3px 8px rgba(146,0,59,0.12); transform: translateY(-1px); }
+  .lev-btn.selected {
+    background: var(--brand-primary); color: #fff;
+    border-color: var(--brand-primary); border-left-color: var(--brand-accent);
+  }
+  .lev-btn .lev-sub { font-size: 10.5px; font-weight: 500; color: var(--brand-muted); display: block; margin-top: 2px; }
+  .lev-btn.selected .lev-sub { color: #f9d8a0; }
+
+  .pick-chip {
+    background: #fff;
+    border: 1.5px solid var(--brand-primary);
+    color: var(--brand-primary);
+    padding: 5px 11px;
+    border-radius: 9999px;
+    font-size: 11px; font-weight: 600;
+    font-family: ui-monospace, Menlo, monospace;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .pick-chip .x { cursor: pointer; opacity: 0.7; font-weight: 700; }
+  .pick-chip .x:hover { opacity: 1; }
+
+  /* ---------- Leveling visualizations: heatmap, badges, commentary ---------- */
+  .lev-heat-h0 { background: #f5f3ee; color: #b8b1a3; }
+  .lev-heat-h1 { background: #fbe2bc; color: var(--brand-text); }
+  .lev-heat-h2 { background: #efb168; color: var(--brand-text); }
+  .lev-heat-h3 { background: #c8456b; color: #fff; }
+  .lev-heat-h4 { background: var(--brand-primary); color: #fff; }
+
+  .lev-badge { display: inline-block; padding: 2px 9px; border-radius: 9999px; font-size: 10.5px; font-weight: 700; letter-spacing: 0.02em; white-space: nowrap; }
+  .lev-badge-good   { background: var(--brand-primary); color: #fff; }
+  .lev-badge-warn   { background: var(--brand-accent); color: var(--brand-primary-dark); }
+  .lev-badge-alert  { background: #fff; color: var(--brand-primary); border: 1.5px solid var(--brand-primary); }
+  .lev-badge-neutral{ background: #f1ece1; color: var(--brand-text); border: 1px solid #c8bfa6; }
+
+  .lev-commentary {
+    background: #fff;
+    border: 1px solid var(--brand-cream);
+    border-left: 4px solid var(--brand-primary);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 16px 0;
+    font-size: 12.5px; line-height: 1.6;
+  }
+  .lev-commentary strong { color: var(--brand-primary); }
+  .lev-commentary .c-icon { font-weight: 700; margin-right: 6px; display: inline-block; width: 14px; }
+  .lev-commentary .ok    { color: var(--brand-primary); }
+  .lev-commentary .warn  { color: #8a5a00; }
+  .lev-commentary .alert { color: var(--brand-primary-dark); }
+
+  .lev-table { border-collapse: collapse; width: 100%; font-size: 12px; }
+  .lev-table th, .lev-table td { padding: 6px 9px; border: 1px solid #e8e2cf; }
+  .lev-table th { background: var(--brand-cream); color: var(--brand-primary); font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; text-align: left; font-weight: 700; }
+  .lev-table td.code { font-family: ui-monospace, Menlo, monospace; font-weight: 600; color: var(--brand-primary); white-space: nowrap; }
+  .lev-table td.center { text-align: center; }
+  .lev-pill { background: var(--brand-primary); color: #fff; font-size: 10px; padding: 2px 8px; border-radius: 9999px; font-weight: 600; }
+
   /* ---------- Report styles (screen + print) ---------- */
   .report-domain      { page-break-inside: avoid; break-inside: avoid; margin-bottom: 32px; }
   .report-domain + .report-domain { page-break-before: always; break-before: page; padding-top: 24px; border-top: 1px dashed #ccc; }
@@ -397,9 +481,21 @@
 
     <!-- REPORTS -->
     <section id="screen-reports" class="screen hidden">
-      <div class="report-controls mb-6">
-        <h2 class="text-2xl font-semibold brand-text-primary mb-1">Reports</h2>
-        <p class="text-sm brand-text-muted mb-4">Pick a domain and how you want to view it, then choose your output: print on paper, save as PDF, or download as an Excel workbook.</p>
+      <h2 class="text-2xl font-semibold brand-text-primary mb-1">Reports</h2>
+      <p class="text-sm brand-text-muted mb-4">Pick a scope, then choose your output: print, save as PDF, or download as Excel.</p>
+
+      <!-- Scope toggle -->
+      <div class="flex items-center gap-3 mb-5">
+        <span class="text-[11px] font-semibold uppercase brand-text-muted tracking-wider">Scope</span>
+        <div class="scope-toggle" id="report-scope">
+          <span class="opt active" data-scope="domain">By Domain</span>
+          <span class="opt" data-scope="course">By Course</span>
+          <span class="opt" data-scope="leveling">Leveling</span>
+        </div>
+      </div>
+
+      <!-- ===== Scope: By Domain (existing controls — UNCHANGED behavior) ===== -->
+      <div id="scope-domain-controls" class="report-controls mb-6">
         <div class="flex flex-wrap items-end gap-3">
           <label class="text-xs">
             <span class="block uppercase tracking-wider font-semibold brand-text-muted mb-1">Domain</span>
@@ -428,6 +524,80 @@
         </div>
       </div>
 
+      <!-- ===== Scope: By Course (single course across all domains) ===== -->
+      <div id="scope-course-controls" class="report-controls mb-6 hidden">
+        <div class="flex flex-wrap items-end gap-3">
+          <label class="text-xs">
+            <span class="block uppercase tracking-wider font-semibold brand-text-muted mb-1">Course</span>
+            <select id="bc-course" class="text-sm border brand-border-cream rounded px-2 py-1 bg-white"></select>
+          </label>
+          <label class="text-xs">
+            <span class="block uppercase tracking-wider font-semibold brand-text-muted mb-1">Format</span>
+            <select id="bc-format" class="text-sm border brand-border-cream rounded px-2 py-1 bg-white">
+              <option value="matrix" selected>Matrix (grid)</option>
+              <option value="detailed">Detailed (narrative)</option>
+            </select>
+          </label>
+          <label class="text-xs">
+            <span class="block uppercase tracking-wider font-semibold brand-text-muted mb-1">Show</span>
+            <select id="bc-show" class="text-sm border brand-border-cream rounded px-2 py-1 bg-white">
+              <option value="all">All sub-competencies</option>
+              <option value="covered">Only covered</option>
+              <option value="gaps">Only zero-coverage</option>
+            </select>
+          </label>
+          <div class="ml-auto flex flex-wrap gap-2">
+            <button id="bc-btn-print" class="px-4 py-2 text-sm font-semibold text-white rounded" style="background:var(--brand-primary)">🖨 Print / Save as PDF</button>
+            <button id="bc-btn-xlsx" class="px-4 py-2 text-sm font-semibold rounded" style="background:var(--brand-accent-dark); color:#1a1a1a">📊 Download Excel</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== Scope: Leveling (4 reports) ===== -->
+      <div id="scope-leveling-controls" class="report-controls mb-6 hidden">
+        <div class="text-[11px] font-semibold uppercase brand-text-muted tracking-wider mb-2">Pick a leveling view</div>
+        <div class="lev-btns mb-4" id="lev-btns">
+          <button class="lev-btn selected" data-lev="progression">
+            <span>Progression<span class="lev-sub">Sub-comp ↗ across semesters</span></span>
+          </button>
+          <button class="lev-btn" data-lev="heatmap">
+            <span>🔥 Heatmap<span class="lev-sub">Sub-comps × semesters</span></span>
+          </button>
+          <button class="lev-btn" data-lev="comparisons">
+            <span>Course Comparisons<span class="lev-sub">Compare 2–4 courses side by side</span></span>
+          </button>
+          <button class="lev-btn" data-lev="breadth">
+            <span>Domain Breadth<span class="lev-sub">Coverage % per domain per semester</span></span>
+          </button>
+        </div>
+
+        <!-- Heatmap domain filter (only shown when heatmap is selected) -->
+        <div id="lev-heatmap-filter" class="hidden mb-4">
+          <label class="text-xs">
+            <span class="block uppercase tracking-wider font-semibold brand-text-muted mb-1">Filter by domain</span>
+            <select id="lev-heatmap-domain" class="text-sm border brand-border-cream rounded px-2 py-1 bg-white"></select>
+          </label>
+        </div>
+
+        <!-- Course Comparisons multi-picker (only shown when comparisons is selected) -->
+        <div id="lev-comparisons-picker" class="hidden mb-4">
+          <div class="text-[11px] font-semibold uppercase brand-text-muted tracking-wider mb-2">Selected courses (2–4)</div>
+          <div class="flex flex-wrap items-center gap-2 mb-2" id="lev-comparison-chips"></div>
+          <div class="flex items-end gap-2">
+            <label class="text-xs">
+              <span class="block uppercase tracking-wider font-semibold brand-text-muted mb-1">Add a course</span>
+              <select id="lev-comparison-add" class="text-sm border brand-border-cream rounded px-2 py-1 bg-white"></select>
+            </label>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 mt-2">
+          <button id="lev-btn-print" class="px-4 py-2 text-sm font-semibold text-white rounded" style="background:var(--brand-primary)">🖨 Print / Save as PDF</button>
+          <button id="lev-btn-xlsx" class="px-4 py-2 text-sm font-semibold rounded" style="background:var(--brand-accent-dark); color:#1a1a1a">📊 Download Excel</button>
+        </div>
+      </div>
+
+      <!-- Single shared canvas for all scopes -->
       <div id="report-canvas" class="bg-white rounded-lg shadow border brand-border-cream p-8"></div>
     </section>
 
@@ -600,7 +770,13 @@ const state = {
   selectedCourse: null,
   selectedOutcome: null,
   mappings: [],         // hydrated from cloud in bootstrap()
-  outcomeMeta: new Map() // key=`${course} ${outcome}` -> {course, outcome_text, concept, topics, evaluation}
+  outcomeMeta: new Map(), // key=`${course} ${outcome}` -> {course, outcome_text, concept, topics, evaluation}
+
+  // Reports tab state
+  reportScope: 'domain',           // 'domain' | 'course' | 'leveling'
+  reportLeveling: 'progression',   // 'progression' | 'heatmap' | 'comparisons' | 'breadth'
+  comparisonCourses: [],           // course names, used by Course Comparisons
+  heatmapDomain: 'all'             // 'all' | '1' .. '10'
 };
 
 function markSaved(text='Saved ✓') {
@@ -1092,10 +1268,79 @@ function renderReports() {
     sel.innerHTML = `<option value="all">All domains</option>` +
       DATA.domains.map(d => `<option value="${d.DomainNumber}">D${d.DomainNumber} — ${escapeHtml(d.DomainName)}</option>`).join('');
   }
+  // Populate "By Course" course selector once (sorted by semester then name)
+  const bcSel = $('#bc-course');
+  if (bcSel && bcSel.options.length === 0) {
+    const sorted = DATA.courses.slice().sort((a, b) => (a.Semester || 99) - (b.Semester || 99) || a.CourseName.localeCompare(b.CourseName));
+    bcSel.innerHTML = sorted.map(c => `<option value="${escapeHtml(c.CourseName)}">${c.CourseNumber ? c.CourseNumber + ' — ' : ''}${escapeHtml(c.CourseName)} · S${c.Semester}</option>`).join('');
+  }
+  // Populate "Add a course" dropdown for Course Comparisons (excludes already-picked)
+  refreshComparisonsAddDropdown();
+  // Populate Heatmap domain filter once
+  const hSel = $('#lev-heatmap-domain');
+  if (hSel && hSel.options.length === 0) {
+    hSel.innerHTML = '<option value="all">All domains (233 sub-comps)</option>' +
+      DATA.domains.map(d => `<option value="${d.DomainNumber}">Domain ${d.DomainNumber} — ${escapeHtml(d.DomainName)}</option>`).join('');
+  }
+  if (hSel) hSel.value = state.heatmapDomain;
+  // Default seed: pick first 2 courses if comparisonCourses is empty
+  if (state.comparisonCourses.length === 0 && DATA.courses.length >= 2) {
+    const sorted = DATA.courses.slice().sort((a, b) => (a.Semester || 99) - (b.Semester || 99) || a.CourseName.localeCompare(b.CourseName));
+    state.comparisonCourses = [sorted[0].CourseName, sorted[1].CourseName];
+  }
+  refreshComparisonChips();
+  applyScopeVisibility();
   drawReport();
 }
 
+function applyScopeVisibility() {
+  $('#scope-domain-controls').classList.toggle('hidden', state.reportScope !== 'domain');
+  $('#scope-course-controls').classList.toggle('hidden', state.reportScope !== 'course');
+  $('#scope-leveling-controls').classList.toggle('hidden', state.reportScope !== 'leveling');
+  $$('#report-scope .opt').forEach(o => o.classList.toggle('active', o.dataset.scope === state.reportScope));
+  $$('#lev-btns .lev-btn').forEach(b => b.classList.toggle('selected', b.dataset.lev === state.reportLeveling));
+  $('#lev-comparisons-picker').classList.toggle('hidden', !(state.reportScope === 'leveling' && state.reportLeveling === 'comparisons'));
+  $('#lev-heatmap-filter').classList.toggle('hidden', !(state.reportScope === 'leveling' && state.reportLeveling === 'heatmap'));
+}
+
+function refreshComparisonChips() {
+  const wrap = $('#lev-comparison-chips');
+  if (!wrap) return;
+  wrap.innerHTML = state.comparisonCourses.map(name => {
+    const c = DATA.courses.find(x => x.CourseName === name);
+    const label = c?.CourseNumber ? `${c.CourseNumber} · S${c.Semester}` : name.slice(0, 24);
+    return `<span class="pick-chip">${escapeHtml(label)}<span class="x" data-name="${escapeHtml(name)}">×</span></span>`;
+  }).join('');
+  wrap.querySelectorAll('.x').forEach(x => x.addEventListener('click', () => {
+    state.comparisonCourses = state.comparisonCourses.filter(n => n !== x.dataset.name);
+    refreshComparisonChips();
+    refreshComparisonsAddDropdown();
+    drawReport();
+  }));
+}
+
+function refreshComparisonsAddDropdown() {
+  const sel = $('#lev-comparison-add');
+  if (!sel) return;
+  const sorted = DATA.courses.slice().sort((a, b) => (a.Semester || 99) - (b.Semester || 99) || a.CourseName.localeCompare(b.CourseName));
+  const available = sorted.filter(c => !state.comparisonCourses.includes(c.CourseName));
+  const atMax = state.comparisonCourses.length >= 4;
+  sel.innerHTML = (atMax
+    ? '<option value="">— Maximum 4 reached —</option>'
+    : '<option value="">— Choose a course to add —</option>') +
+    available.map(c => `<option value="${escapeHtml(c.CourseName)}">${c.CourseNumber ? c.CourseNumber + ' — ' : ''}${escapeHtml(c.CourseName)} · S${c.Semester}</option>`).join('');
+  sel.disabled = atMax;
+}
+
 function drawReport() {
+  // Dispatch based on selected scope
+  if (state.reportScope === 'course')   return drawByCourseReport();
+  if (state.reportScope === 'leveling') return drawLevelingReport();
+  return drawByDomainReport();  // default
+}
+
+// ---- By Domain (the existing reports — unchanged behavior) ----
+function drawByDomainReport() {
   const domainVal = $('#report-domain').value;
   const format    = $('#report-format').value;
   const showFilter = $('#report-show').value;
@@ -1255,11 +1500,474 @@ function renderDomainMatrix(domain, subs, showFilter, summary) {
     </section>`;
 }
 
-// Re-render on control change + handle Print button
+// Re-render on control change + handle Print button (By Domain)
 ['report-domain', 'report-format', 'report-show'].forEach(id => {
   document.getElementById(id).addEventListener('change', drawReport);
 });
 document.getElementById('btn-print').addEventListener('click', () => window.print());
+
+// ---------- New: Scope toggle + By Course + Leveling wire-up ----------
+$$('#report-scope .opt').forEach(o => o.addEventListener('click', () => {
+  state.reportScope = o.dataset.scope;
+  applyScopeVisibility();
+  drawReport();
+}));
+$$('#lev-btns .lev-btn').forEach(b => b.addEventListener('click', () => {
+  state.reportLeveling = b.dataset.lev;
+  applyScopeVisibility();
+  drawReport();
+}));
+['bc-course', 'bc-format', 'bc-show'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('change', drawReport);
+});
+document.getElementById('bc-btn-print')?.addEventListener('click', () => window.print());
+document.getElementById('lev-btn-print')?.addEventListener('click', () => window.print());
+document.getElementById('lev-comparison-add')?.addEventListener('change', function() {
+  if (this.value && state.comparisonCourses.length < 4) {
+    state.comparisonCourses.push(this.value);
+    refreshComparisonChips();
+    refreshComparisonsAddDropdown();
+    drawReport();
+  }
+  this.value = '';
+});
+document.getElementById('lev-heatmap-domain')?.addEventListener('change', function() {
+  state.heatmapDomain = this.value;
+  drawReport();
+});
+
+// ===================================================================
+// REPORTS — By Course + Leveling (V2 additions)
+// ===================================================================
+
+// --- Helpers ---
+function getCourseSemester(courseName) {
+  const c = DATA.courses.find(x => x.CourseName === courseName);
+  return c?.Semester || 0;
+}
+function getCourseNumber(courseName) {
+  const c = DATA.courses.find(x => x.CourseName === courseName);
+  return c?.CourseNumber || '';
+}
+// For each leaf sub-comp: returns {S1: count, S2: count, S3: count, S4: count, total, semestersCovered}
+function subCompCountsBySemester(code) {
+  const counts = {1:0, 2:0, 3:0, 4:0};
+  state.mappings.filter(m => m.SubCompetencyCode === code).forEach(m => {
+    const s = getCourseSemester(m.Course);
+    if (s >= 1 && s <= 4) counts[s] += 1;
+  });
+  const total = counts[1] + counts[2] + counts[3] + counts[4];
+  const semestersCovered = [1,2,3,4].filter(s => counts[s] > 0).length;
+  return { ...counts, total, semestersCovered };
+}
+// For each leaf sub-comp: returns array of mapping rows with course + outcome info
+function subCompTouchpoints(code) {
+  return state.mappings.filter(m => m.SubCompetencyCode === code).map(m => ({
+    semester: getCourseSemester(m.Course),
+    course: m.Course,
+    courseNumber: getCourseNumber(m.Course),
+    outcome: m.OutcomeText
+  })).sort((a, b) => a.semester - b.semester || a.course.localeCompare(b.course));
+}
+// Pattern classification for a sub-comp
+function classifyProgression(counts) {
+  if (counts.total === 0) return { label: 'Zero coverage', cls: 'lev-badge-alert' };
+  if (counts.semestersCovered === 1) {
+    const onlyS = [1,2,3,4].find(s => counts[s] > 0);
+    if (onlyS === 4) return { label: 'S4 only — late intro', cls: 'lev-badge-warn' };
+    return { label: `Single semester (S${onlyS})`, cls: 'lev-badge-warn' };
+  }
+  if (counts.semestersCovered === 4) return { label: 'All 4 semesters', cls: 'lev-badge-good' };
+  // Climb check: each subsequent semester ≥ previous (where present)
+  const present = [1,2,3,4].map(s => counts[s]);
+  let climb = true;
+  for (let i = 1; i < 4; i++) if (present[i] !== 0 && present[i] < present[i-1] && present[i-1] !== 0) climb = false;
+  if (climb) return { label: 'Strong climb', cls: 'lev-badge-good' };
+  return { label: 'Sustained', cls: 'lev-badge-good' };
+}
+function heatClass(n) {
+  if (n === 0) return 'lev-heat-h0';
+  if (n === 1) return 'lev-heat-h1';
+  if (n <= 3) return 'lev-heat-h2';
+  if (n <= 6) return 'lev-heat-h3';
+  return 'lev-heat-h4';
+}
+// Per-domain coverage % per semester (returns {1: {covered, total, pct}, 2: {...}, ...})
+function domainBreadthBySemester(domainNumber) {
+  const leafs = DATA.subCompetencies.filter(s => s.Domain === domainNumber && !s.IsParent);
+  const total = leafs.length;
+  const out = {};
+  for (const sem of [1,2,3,4]) {
+    const semCourses = new Set(DATA.courses.filter(c => c.Semester === sem).map(c => c.CourseName));
+    const coveredCodes = new Set();
+    state.mappings.filter(m => m.Domain === domainNumber && semCourses.has(m.Course)).forEach(m => coveredCodes.add(m.SubCompetencyCode));
+    // Only count leaf codes
+    const leafCodeSet = new Set(leafs.map(l => l.Code));
+    const covered = Array.from(coveredCodes).filter(c => leafCodeSet.has(c)).length;
+    out[sem] = { covered, total, pct: total === 0 ? 0 : Math.round(100 * covered / total) };
+  }
+  return out;
+}
+function classifyBreadthTrend(row) {
+  // row = {1: pct, 2: pct, 3: pct, 4: pct}
+  const v = [row[1].pct, row[2].pct, row[3].pct, row[4].pct];
+  // Zero everywhere
+  if (v.every(x => x === 0)) return { label: 'No coverage', cls: 'lev-badge-alert' };
+  // Strict monotonic climb
+  if (v[0] <= v[1] && v[1] <= v[2] && v[2] <= v[3] && v[3] > v[0]) {
+    return v[3] - v[0] >= 30 ? { label: '↗ Strong climb', cls: 'lev-badge-good' } : { label: '↗ Steady climb', cls: 'lev-badge-good' };
+  }
+  // Drops in S4 from peak
+  const peak = Math.max(...v);
+  const peakIdx = v.indexOf(peak);
+  if (peakIdx < 3 && v[3] < peak - 10) {
+    if (v[0] > v[3] && v[0] > v[1] && v[3] > v[1]) return { label: 'U-shape', cls: 'lev-badge-warn' };
+    return { label: '↘ Drops mid/late', cls: 'lev-badge-alert' };
+  }
+  if (Math.abs(v[3] - v[0]) <= 8) return { label: '→ Plateau', cls: 'lev-badge-warn' };
+  return { label: 'Mixed', cls: 'lev-badge-warn' };
+}
+
+// --- By Course render ---
+function drawByCourseReport() {
+  const courseName = $('#bc-course').value;
+  const format = $('#bc-format').value;
+  const showFilter = $('#bc-show').value;
+  if (!courseName) { $('#report-canvas').innerHTML = '<div class="text-sm brand-text-muted">Pick a course.</div>'; return; }
+  const c = DATA.courses.find(x => x.CourseName === courseName);
+  if (!c) { $('#report-canvas').innerHTML = '<div class="text-sm brand-text-muted">Course not found.</div>'; return; }
+
+  const courseMappings = state.mappings.filter(m => m.Course === courseName);
+  const distinctSubs = new Set(courseMappings.map(m => m.SubCompetencyCode));
+  const headerHtml = `
+    <div class="report-meta">
+      <div class="title">${c.CourseNumber ? escapeHtml(c.CourseNumber) + ' — ' : ''}${escapeHtml(c.CourseName)}</div>
+      <div>Semester ${c.Semester} · ${c.Credits} credit${c.Credits===1?'':'s'} · ${distinctSubs.size} sub-competencies covered · ${courseMappings.length} mappings · Generated ${new Date().toLocaleDateString()}</div>
+    </div>`;
+
+  // For each domain, render filtered to ONLY this course's mappings
+  const body = DATA.domains.map(d => {
+    const subs = DATA.subCompetencies.filter(s => s.Domain === d.DomainNumber);
+    const leafsInDomain = subs.filter(s => !s.IsParent);
+    const courseLeavesInDomain = courseMappings.filter(m => m.Domain === d.DomainNumber);
+    const coveredCodes = new Set(courseLeavesInDomain.map(m => m.SubCompetencyCode));
+    const summary = `${coveredCodes.size} of ${leafsInDomain.length} sub-competencies covered by this course`;
+    if (format === 'detailed') {
+      return renderByCourseDetailedDomain(d, subs, courseName, showFilter, summary, coveredCodes);
+    } else {
+      return renderByCourseMatrixDomain(d, subs, courseName, showFilter, summary, coveredCodes);
+    }
+  }).join('');
+
+  $('#report-canvas').innerHTML = headerHtml + body;
+}
+function renderByCourseDetailedDomain(domain, subs, courseName, showFilter, summary, coveredCodes) {
+  const parents = subs.filter(s => s.IsParent);
+  const sectionsHtml = parents.map(p => {
+    const children = subs.filter(s => s.ParentCode === p.Code && !s.IsParent);
+    const leafItems = children.map(leaf => {
+      const isCovered = coveredCodes.has(leaf.Code);
+      if (showFilter === 'covered' && !isCovered) return '';
+      if (showFilter === 'gaps'    &&  isCovered) return '';
+      const courseHits = state.mappings.filter(m => m.Course === courseName && m.SubCompetencyCode === leaf.Code);
+      const outcomesList = courseHits.length === 0
+        ? '<li><em style="color:var(--brand-muted)">Not covered by this course.</em></li>'
+        : courseHits.map(m => {
+            const meta = getOutcomeMeta(m.Course, m.OutcomeText);
+            const annot = [];
+            const cs = meta.concepts || [];
+            if (cs.length) annot.push(`<span style="color:var(--brand-muted)">Concept${cs.length===1?'':'s'}:</span> ${escapeHtml(cs.join(', '))}`);
+            if (meta.topics)     annot.push(`<span style="color:var(--brand-muted)">Topics:</span> ${escapeHtml(meta.topics)}`);
+            if (meta.evaluation) annot.push(`<span style="color:var(--brand-muted)">Evaluation:</span> ${escapeHtml(meta.evaluation)}`);
+            const annotHtml = annot.length ? `<div class="outcome" style="font-size:11px;margin-top:2px">${annot.join(' · ')}</div>` : '';
+            return `<li><span class="outcome">"${escapeHtml(m.OutcomeText)}"</span>${annotHtml}</li>`;
+          }).join('');
+      return `<div class="report-leaf"><div><span class="code">${escapeHtml(leaf.Code)}</span><span class="text">${escapeHtml(leaf.Text)}</span>${!isCovered ? '<span class="gap">NOT COVERED</span>' : ''}</div><ul class="report-courses">${outcomesList}</ul></div>`;
+    }).filter(Boolean).join('');
+    if (!leafItems) return '';
+    return `<div class="report-parent"><span class="code">${escapeHtml(p.Code)}</span><span class="text">${escapeHtml(p.Text)}</span></div>${leafItems}`;
+  }).filter(Boolean).join('');
+  return `<section class="report-domain"><h3>Domain ${domain.DomainNumber} — ${escapeHtml(domain.DomainName)}</h3><div class="summary">${summary}</div>${sectionsHtml || '<div class="text-sm" style="color:var(--brand-muted)">No sub-competencies match the current filter.</div>'}</section>`;
+}
+function renderByCourseMatrixDomain(domain, subs, courseName, showFilter, summary, coveredCodes) {
+  const codeKey = (s) => s.Code.replace(/(\d+)(\.\d+)?([a-z]*)/, (_, n, p, l) => String(n).padStart(3,'0') + (p || '') + (l || ''));
+  const allSubs = subs.slice().sort((a, b) => codeKey(a).localeCompare(codeKey(b)));
+  const visibleSubs = allSubs.filter(s => {
+    if (s.IsParent) return true;
+    if (showFilter === 'covered') return coveredCodes.has(s.Code);
+    if (showFilter === 'gaps')    return !coveredCodes.has(s.Code);
+    return true;
+  });
+  if (visibleSubs.filter(s => !s.IsParent).length === 0) {
+    return `<section class="report-domain"><h3>Domain ${domain.DomainNumber} — ${escapeHtml(domain.DomainName)}</h3><div class="summary">${summary}</div><div class="text-sm" style="color:var(--brand-muted)">No sub-competencies match the current filter.</div></section>`;
+  }
+  const courseOutcomes = DATA.courseOutcomes.filter(o => o.Course === courseName);
+  const subHeaders = visibleSubs.map(s => `<th class="sub-col${s.IsParent ? ' parent-col' : ''}" title="${escapeHtml(s.Text)}"><div class="code">${escapeHtml(s.Code)}</div><div class="text">${escapeHtml(s.Text)}</div></th>`).join('');
+  const headerRow = `<tr><th class="course-col">Course Outcome</th><th class="concepts-col">Concepts</th><th class="topics-col">Topics</th>${subHeaders}<th class="eval-col">Evaluation</th></tr>`;
+  const bodyRows = courseOutcomes.map(o => {
+    const meta = getOutcomeMeta(courseName, o.OutcomeText);
+    const conceptsStr = (meta.concepts || []).join(', ');
+    const xs = visibleSubs.map(s => {
+      const mapped = state.mappings.some(m => m.Course === courseName && m.OutcomeText === o.OutcomeText && m.SubCompetencyCode === s.Code);
+      return `<td class="x-cell${s.IsParent ? ' parent-col' : ''}${mapped ? ' x' : ''}">${mapped ? 'X' : ''}</td>`;
+    }).join('');
+    return `<tr><td class="outcome">${escapeHtml(o.OutcomeText)}</td><td class="concepts">${escapeHtml(conceptsStr)}</td><td class="topics">${escapeHtml(meta.topics || '')}</td>${xs}<td class="eval">${escapeHtml(meta.evaluation || '')}</td></tr>`;
+  }).join('');
+  return `<section class="report-domain"><h3>Domain ${domain.DomainNumber} — ${escapeHtml(domain.DomainName)}</h3><div class="summary">${summary}</div><div class="report-matrix-wrap"><table class="report-matrix-excel"><thead>${headerRow}</thead><tbody>${bodyRows}</tbody></table></div></section>`;
+}
+
+// --- Leveling: dispatcher ---
+function drawLevelingReport() {
+  const which = state.reportLeveling;
+  if (which === 'progression') return renderProgressionView();
+  if (which === 'heatmap')     return renderHeatmapView();
+  if (which === 'comparisons') return renderComparisonsView();
+  if (which === 'breadth')     return renderBreadthView();
+}
+
+// --- Leveling: Progression ---
+function renderProgressionView() {
+  const leafs = DATA.subCompetencies.filter(s => !s.IsParent);
+  const rows = leafs.map(s => {
+    const counts = subCompCountsBySemester(s.Code);
+    const cls = classifyProgression(counts);
+    const touch = subCompTouchpoints(s.Code);
+    return { s, counts, cls, touch };
+  });
+  // Buckets for commentary
+  const wellLeveled   = rows.filter(r => r.counts.semestersCovered >= 2).length;
+  const singleSem     = rows.filter(r => r.counts.semestersCovered === 1).length;
+  const zeroCov       = rows.filter(r => r.counts.total === 0).length;
+  const lateIntros    = rows.filter(r => r.counts.semestersCovered === 1 && r.counts[4] > 0).length;
+  const lateExamples  = rows.filter(r => r.counts.semestersCovered === 1 && r.counts[4] > 0).slice(0, 5).map(r => r.s.Code).join(', ');
+
+  const commentary = `
+    <div class="lev-commentary">
+      <strong>📊 Auto-generated commentary:</strong><br><br>
+      <span class="c-icon ok">●</span> <strong>${wellLeveled} sub-comps</strong> appear in 2 or more semesters — solid reinforcement pattern.<br>
+      <span class="c-icon warn">●</span> <strong>${singleSem} sub-comps</strong> appear in only 1 semester — review whether they need reinforcement.<br>
+      <span class="c-icon alert">●</span> <strong>${zeroCov} sub-comps</strong> have zero coverage anywhere in the program.<br>
+      ${lateIntros ? `<span class="c-icon warn">●</span> <strong>${lateIntros} sub-comps</strong> appear only in S4 with no earlier exposure (e.g., ${escapeHtml(lateExamples)}) — potential "mastery without introduction" issue.<br>` : ''}
+    </div>`;
+
+  // Show rows grouped by domain, then code
+  const byDomain = {};
+  rows.forEach(r => { byDomain[r.s.Domain] ??= []; byDomain[r.s.Domain].push(r); });
+  const sections = Object.keys(byDomain).sort((a,b) => +a - +b).map(dnum => {
+    const domain = DATA.domains.find(d => d.DomainNumber === +dnum);
+    const subRows = byDomain[dnum].slice().sort((a,b) => a.s.Code.localeCompare(b.s.Code));
+    const subBlocks = subRows.map(r => {
+      const tableRows = r.touch.length === 0
+        ? '<tr><td colspan="3" style="text-align:center;color:var(--brand-muted);font-style:italic">No coverage in any course.</td></tr>'
+        : r.touch.map(t => `<tr><td class="center">S${t.semester}</td><td>${t.courseNumber ? `<span style="font-family:Menlo,monospace;color:var(--brand-primary);font-weight:600">${escapeHtml(t.courseNumber)}</span> ` : ''}${escapeHtml(t.course)}</td><td>${escapeHtml(t.outcome)}</td></tr>`).join('');
+      return `<div style="margin-bottom:14px">
+        <h4 style="font-size:12.5px;margin:8px 0 4px"><span class="lev-pill">Domain ${r.s.Domain}</span> &nbsp; <span style="font-family:Menlo,monospace;color:var(--brand-primary);font-weight:700">${escapeHtml(r.s.Code)}</span> &nbsp; ${escapeHtml(r.s.Text)} &nbsp; <span class="lev-badge ${r.cls.cls}">${escapeHtml(r.cls.label)}</span></h4>
+        <table class="lev-table"><thead><tr><th>Semester</th><th>Course</th><th>Outcome</th></tr></thead><tbody>${tableRows}</tbody></table>
+      </div>`;
+    }).join('');
+    return `<section class="report-domain"><h3>Domain ${domain.DomainNumber} — ${escapeHtml(domain.DomainName)}</h3>${subBlocks}</section>`;
+  }).join('');
+
+  $('#report-canvas').innerHTML = `
+    <div class="report-meta">
+      <div class="title">Sub-Competency Progression</div>
+      <div>${rows.length} sub-competencies analyzed · Generated ${new Date().toLocaleDateString()}</div>
+    </div>
+    ${commentary}
+    ${sections}`;
+}
+
+// --- Leveling: Heatmap ---
+function renderHeatmapView() {
+  let leafs = DATA.subCompetencies.filter(s => !s.IsParent);
+  if (state.heatmapDomain !== 'all') {
+    leafs = leafs.filter(s => s.Domain === +state.heatmapDomain);
+  }
+  leafs = leafs.slice().sort((a,b) => a.Code.localeCompare(b.Code));
+  const rows = leafs.map(s => {
+    const counts = subCompCountsBySemester(s.Code);
+    return { s, counts, cls: classifyProgression(counts) };
+  });
+
+  const climbers     = rows.filter(r => r.cls.label === 'Strong climb').slice(0, 6).map(r => r.s.Code);
+  const lateIntros   = rows.filter(r => r.counts.semestersCovered === 1 && r.counts[4] > 0).slice(0, 6).map(r => r.s.Code);
+  const zeroCov      = rows.filter(r => r.counts.total === 0).length;
+  const sustained    = rows.filter(r => r.cls.label === 'Sustained' || r.cls.label === 'All 4 semesters').length;
+
+  // S1 vs S4 breadth growth
+  const s1Total = rows.reduce((sum, r) => sum + r.counts[1], 0);
+  const s4Total = rows.reduce((sum, r) => sum + r.counts[4], 0);
+  const growthPct = s1Total === 0 ? 0 : Math.round(100 * (s4Total - s1Total) / s1Total);
+
+  const commentary = `
+    <div class="lev-commentary">
+      <strong>📊 Auto-generated commentary:</strong><br><br>
+      ${climbers.length ? `<span class="c-icon ok">●</span> <strong>Strong climbers</strong> (each semester ≥ previous): ${escapeHtml(climbers.join(', '))} — textbook leveling.<br>` : ''}
+      ${lateIntros.length ? `<span class="c-icon warn">●</span> <strong>Late introductions</strong> (first appear in S4): ${escapeHtml(lateIntros.join(', '))}.<br>` : ''}
+      <span class="c-icon ok">●</span> <strong>${sustained} sub-comps</strong> are sustained or hit in all 4 semesters.<br>
+      ${zeroCov ? `<span class="c-icon alert">●</span> <strong>Zero coverage</strong>: ${zeroCov} sub-comps. Listed at the bottom in the appendix.<br>` : ''}
+      <span class="c-icon ok">●</span> Total touchpoint count grows <strong>${growthPct >= 0 ? '+' : ''}${growthPct}% from S1 to S4</strong>.
+    </div>`;
+
+  const legend = `<div style="font-size:11px;color:var(--brand-muted);margin:6px 0 10px;">Color: <span class="lev-heat-h0" style="padding:2px 7px;border-radius:3px">0</span> <span class="lev-heat-h1" style="padding:2px 7px;border-radius:3px">1</span> <span class="lev-heat-h2" style="padding:2px 7px;border-radius:3px">2-3</span> <span class="lev-heat-h3" style="padding:2px 7px;border-radius:3px">4-6</span> <span class="lev-heat-h4" style="padding:2px 7px;border-radius:3px">7+</span></div>`;
+
+  const tbody = rows.map(r => `
+    <tr>
+      <td class="code">${escapeHtml(r.s.Code)}</td>
+      <td>${escapeHtml(r.s.Text.length > 70 ? r.s.Text.slice(0, 70) + '…' : r.s.Text)}</td>
+      <td class="center ${heatClass(r.counts[1])}">${r.counts[1]}</td>
+      <td class="center ${heatClass(r.counts[2])}">${r.counts[2]}</td>
+      <td class="center ${heatClass(r.counts[3])}">${r.counts[3]}</td>
+      <td class="center ${heatClass(r.counts[4])}">${r.counts[4]}</td>
+      <td><span class="lev-badge ${r.cls.cls}">${escapeHtml(r.cls.label)}</span></td>
+    </tr>`).join('');
+
+  const heatmapDomainName = state.heatmapDomain === 'all'
+    ? null
+    : DATA.domains.find(d => d.DomainNumber === +state.heatmapDomain)?.DomainName;
+  const titleSuffix = heatmapDomainName ? ` — Domain ${state.heatmapDomain}: ${heatmapDomainName}` : '';
+
+  $('#report-canvas').innerHTML = `
+    <div class="report-meta">
+      <div class="title">Sub-Competency Heatmap by Semester${escapeHtml(titleSuffix)}</div>
+      <div>${rows.length} sub-competenc${rows.length===1?'y':'ies'} · Generated ${new Date().toLocaleDateString()}</div>
+    </div>
+    ${commentary}
+    ${legend}
+    <table class="lev-table">
+      <thead><tr><th>Code</th><th>Sub-competency</th><th>S1</th><th>S2</th><th>S3</th><th>S4</th><th>Pattern</th></tr></thead>
+      <tbody>${tbody}</tbody>
+    </table>`;
+}
+
+// --- Leveling: Course Comparisons ---
+function renderComparisonsView() {
+  const courses = state.comparisonCourses.map(name => DATA.courses.find(c => c.CourseName === name)).filter(Boolean);
+  if (courses.length < 2) {
+    $('#report-canvas').innerHTML = `<div class="lev-commentary">Pick at least 2 courses (up to 4) above to compare them.</div>`;
+    return;
+  }
+  // Build per-course stats
+  const stats = courses.map(c => {
+    const ms = state.mappings.filter(m => m.Course === c.CourseName);
+    const distinctSubs = new Set(ms.map(m => m.SubCompetencyCode));
+    const outs = DATA.courseOutcomes.filter(o => o.Course === c.CourseName).length;
+    return { c, ms, distinctSubs, outcomes: outs, density: outs ? (ms.length / outs).toFixed(1) : '—' };
+  });
+  // Sub-comp counts across the selected courses
+  const countMap = new Map(); // code -> # selected courses that touch it
+  stats.forEach(({ distinctSubs }) => distinctSubs.forEach(code => countMap.set(code, (countMap.get(code) || 0) + 1)));
+  const buckets = { all: [], partial: { 3: [], 2: [] }, unique: [] };
+  for (const [code, n] of countMap) {
+    if (n === stats.length) buckets.all.push(code);
+    else if (n === 1) buckets.unique.push(code);
+    else (buckets.partial[n] ??= []).push(code);
+  }
+  // Commentary
+  const totalSubsTouched = countMap.size;
+  const courseLine = courses.map(c => `${c.CourseNumber || c.CourseName} (S${c.Semester})`).join(' → ');
+  const distincts = stats.map(s => s.distinctSubs.size);
+  const isClimbing = distincts.every((v, i) => i === 0 || v >= distincts[i - 1]);
+  const lastVsFirst = distincts[distincts.length - 1] - distincts[0];
+  const commentary = `
+    <div class="lev-commentary">
+      <strong>📊 Auto-generated commentary:</strong><br><br>
+      <span class="c-icon ok">●</span> Comparing <strong>${courses.length} courses</strong> (${escapeHtml(courseLine)}). Total of <strong>${totalSubsTouched}</strong> distinct sub-competencies touched across the selection.<br>
+      <span class="c-icon ${buckets.all.length ? 'ok' : 'warn'}">●</span> <strong>${buckets.all.length} sub-comps</strong> are touched by ALL selected courses — the core competencies reinforced through the sequence.<br>
+      ${(buckets.partial[3]?.length || buckets.partial[2]?.length) ? `<span class="c-icon ok">●</span> <strong>${(buckets.partial[3]?.length || 0) + (buckets.partial[2]?.length || 0)} sub-comps</strong> overlap partially (touched by 2-3 of the selected courses).<br>` : ''}
+      <span class="c-icon ${buckets.unique.length > totalSubsTouched * 0.6 ? 'warn' : 'ok'}">●</span> <strong>${buckets.unique.length} sub-comps</strong> are unique to one course in the selection.<br>
+      ${isClimbing
+        ? `<span class="c-icon ok">●</span> Distinct sub-comp counts <strong>climb (or stay equal)</strong> across the sequence — healthy leveling.<br>`
+        : `<span class="c-icon warn">●</span> Distinct sub-comp counts <strong>do not strictly climb</strong> across the sequence (${distincts.join(' → ')}). For paired courses, later courses should typically expand or at least match.<br>`}
+      ${lastVsFirst < 0 ? `<span class="c-icon warn">●</span> The last selected course covers <strong>${Math.abs(lastVsFirst)} fewer</strong> distinct sub-comps than the first — review whether this is intentional capstone narrowing or a leveling gap.<br>` : ''}
+    </div>`;
+
+  // Stats table
+  const statsHeader = `<tr><th></th>${stats.map(s => `<th class="center">${s.c.CourseNumber || ''}<br><span style="font-weight:400;font-size:10px;color:var(--brand-muted)">${escapeHtml(s.c.CourseName.slice(0,28))} · S${s.c.Semester}</span></th>`).join('')}</tr>`;
+  const statRow = (label, fn) => `<tr><td><strong>${label}</strong></td>${stats.map(s => `<td class="center">${fn(s)}</td>`).join('')}</tr>`;
+  const statsTable = `<table class="lev-table">
+    <thead>${statsHeader}</thead>
+    <tbody>
+      ${statRow('Distinct sub-comps', s => s.distinctSubs.size)}
+      ${statRow('Total mappings', s => s.ms.length)}
+      ${statRow('Outcomes', s => s.outcomes)}
+      ${statRow('Mappings / outcome', s => s.density)}
+    </tbody>
+  </table>`;
+
+  // Overlap table
+  const ex = (arr, n=8) => arr.slice(0, n).join(' · ') + (arr.length > n ? ' · …' : '');
+  const overlapTable = `<table class="lev-table" style="margin-top:14px">
+    <thead><tr><th>Coverage status</th><th class="center">Count</th><th>Examples</th></tr></thead>
+    <tbody>
+      <tr><td><span class="lev-badge lev-badge-good">Shared by all ${stats.length}</span></td><td class="center">${buckets.all.length}</td><td class="code">${escapeHtml(ex(buckets.all))}</td></tr>
+      ${stats.length >= 4 ? `<tr><td><span class="lev-badge lev-badge-neutral">Shared by 3 of ${stats.length}</span></td><td class="center">${(buckets.partial[3]||[]).length}</td><td class="code">${escapeHtml(ex(buckets.partial[3]||[]))}</td></tr>` : ''}
+      ${stats.length >= 3 ? `<tr><td><span class="lev-badge lev-badge-neutral">Shared by 2 of ${stats.length}</span></td><td class="center">${(buckets.partial[2]||[]).length}</td><td class="code">${escapeHtml(ex(buckets.partial[2]||[]))}</td></tr>` : ''}
+      <tr><td><span class="lev-badge lev-badge-warn">Unique to one course</span></td><td class="center">${buckets.unique.length}</td><td class="code">${escapeHtml(ex(buckets.unique))}</td></tr>
+    </tbody>
+  </table>`;
+
+  $('#report-canvas').innerHTML = `
+    <div class="report-meta">
+      <div class="title">Course Comparisons</div>
+      <div>Comparing ${courses.length} courses · Generated ${new Date().toLocaleDateString()}</div>
+    </div>
+    ${commentary}
+    <h4 style="font-size:12.5px;margin:14px 0 6px;color:var(--brand-primary)">Side-by-side stats</h4>
+    ${statsTable}
+    <h4 style="font-size:12.5px;margin:18px 0 6px;color:var(--brand-primary)">Sub-competency overlap</h4>
+    ${overlapTable}`;
+}
+
+// --- Leveling: Domain Breadth ---
+function renderBreadthView() {
+  const rows = DATA.domains.map(d => {
+    const breadth = domainBreadthBySemester(d.DomainNumber);
+    const trend = classifyBreadthTrend(breadth);
+    return { d, breadth, trend };
+  });
+  // Commentary
+  const climbers = rows.filter(r => r.trend.label.startsWith('↗') && !r.trend.label.includes('Drops')).length;
+  const dropDomains = rows.filter(r => r.trend.cls === 'lev-badge-alert').map(r => r.d.DomainName);
+  const uShape = rows.filter(r => r.trend.label === 'U-shape').map(r => r.d.DomainName);
+  const perfectDomains = rows.filter(r => {
+    const v = [r.breadth[1].pct, r.breadth[2].pct, r.breadth[3].pct, r.breadth[4].pct];
+    return v[0] < v[1] && v[1] < v[2] && v[2] < v[3];
+  }).map(r => `D${r.d.DomainNumber} (${r.d.DomainName})`);
+  const commentary = `
+    <div class="lev-commentary">
+      <strong>📊 Auto-generated commentary:</strong><br><br>
+      <span class="c-icon ok">●</span> <strong>${climbers} of ${rows.length} domains</strong> show a steady or strong climb from S1 to S4 — exactly the leveling pattern accreditors look for.<br>
+      ${dropDomains.length ? `<span class="c-icon alert">●</span> <strong>Domains with drops</strong>: ${escapeHtml(dropDomains.join(', '))} — review for whether earlier coverage gets reinforced later.<br>` : ''}
+      ${uShape.length ? `<span class="c-icon warn">●</span> <strong>U-shape domains</strong>: ${escapeHtml(uShape.join(', '))} — covered early, dropped, returns at the end. Common but worth verifying intentional.<br>` : ''}
+      ${perfectDomains.length ? `<span class="c-icon ok">●</span> <strong>Perfectly leveled</strong> (strict monotonic climb): ${escapeHtml(perfectDomains.join(', '))}.<br>` : ''}
+    </div>`;
+
+  const tbody = rows.map(r => `
+    <tr>
+      <td>${r.d.DomainNumber} — ${escapeHtml(r.d.DomainName)}</td>
+      <td class="center ${heatClass(Math.ceil(r.breadth[1].pct/15))}">${r.breadth[1].pct}%</td>
+      <td class="center ${heatClass(Math.ceil(r.breadth[2].pct/15))}">${r.breadth[2].pct}%</td>
+      <td class="center ${heatClass(Math.ceil(r.breadth[3].pct/15))}">${r.breadth[3].pct}%</td>
+      <td class="center ${heatClass(Math.ceil(r.breadth[4].pct/15))}">${r.breadth[4].pct}%</td>
+      <td class="center"><span class="lev-badge ${r.trend.cls}">${escapeHtml(r.trend.label)}</span></td>
+    </tr>`).join('');
+
+  // Per-semester course counts for header
+  const coursesPerSem = [1,2,3,4].map(s => DATA.courses.filter(c => c.Semester === s).length);
+
+  $('#report-canvas').innerHTML = `
+    <div class="report-meta">
+      <div class="title">Domain Breadth per Semester</div>
+      <div>% of leaf sub-comps in each domain touched by any course in that semester · Generated ${new Date().toLocaleDateString()}</div>
+    </div>
+    ${commentary}
+    <table class="lev-table">
+      <thead><tr><th>Domain</th><th class="center">S1<br><span style="font-weight:400;font-size:10px;color:var(--brand-muted)">${coursesPerSem[0]} courses</span></th><th class="center">S2<br><span style="font-weight:400;font-size:10px;color:var(--brand-muted)">${coursesPerSem[1]} courses</span></th><th class="center">S3<br><span style="font-weight:400;font-size:10px;color:var(--brand-muted)">${coursesPerSem[2]} courses</span></th><th class="center">S4<br><span style="font-weight:400;font-size:10px;color:var(--brand-muted)">${coursesPerSem[3]} courses</span></th><th class="center">Trend</th></tr></thead>
+      <tbody>${tbody}</tbody>
+    </table>`;
+}
 
 // ---------- Excel export (ExcelJS) ----------
 function compareCodes(a, b) {
@@ -1402,6 +2110,382 @@ document.getElementById('btn-xlsx-all').addEventListener('click', async () => {
   wb.created = new Date();
   for (const d of DATA.domains) buildDomainSheet(wb, d, showFilter);
   await downloadWorkbook(wb, `Curriculum_Map_All_Domains_${new Date().toISOString().slice(0,10)}.xlsx`);
+});
+
+// ============================================================
+// V2 Excel exports — By Course + 4 Leveling reports
+// ============================================================
+
+// --- Style helpers reused below ---
+const XL_HEADER_FILL = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF2EFE5' } };
+const XL_HEADER_FONT = { color: { argb: 'FF000000' }, size: 10, bold: true };
+const XL_BODY_FONT   = { color: { argb: 'FF000000' }, size: 10 };
+const XL_THIN_BORDER = { top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} };
+function writeCommentaryBlock(ws, lines, startRow, totalCols) {
+  ws.mergeCells(startRow, 1, startRow, totalCols);
+  const c = ws.getCell(startRow, 1);
+  c.value = '📊 AUTO-GENERATED COMMENTARY';
+  c.font = { bold: true, size: 11, color: { argb: 'FF92003B' } };
+  c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFAF8F1' } };
+  c.alignment = { horizontal: 'left', vertical: 'middle' };
+  let r = startRow + 1;
+  for (const line of lines) {
+    ws.mergeCells(r, 1, r, totalCols);
+    const cell = ws.getCell(r, 1);
+    cell.value = line;
+    cell.font = { size: 10, color: { argb: 'FF1F1F1F' } };
+    cell.alignment = { horizontal: 'left', vertical: 'middle', wrapText: true };
+    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFAF8F1' } };
+    ws.getRow(r).height = 18;
+    r++;
+  }
+  return r;
+}
+function levHeatFill(n) {
+  if (n === 0) return { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF5F3EE' } };
+  if (n === 1) return { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFBE2BC' } };
+  if (n <= 3) return { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFEFB168' } };
+  if (n <= 6) return { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFC8456B' } };
+  return         { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF92003B' } };
+}
+function levHeatFont(n) {
+  if (n >= 4) return { color: { argb: 'FFFFFFFF' }, size: 10, bold: true };
+  return { color: { argb: 'FF1F1F1F' }, size: 10, bold: n > 0 };
+}
+
+// --- By Course Excel ---
+function buildByCourseSheet(wb, courseName, showFilter) {
+  const c = DATA.courses.find(x => x.CourseName === courseName);
+  const courseMappings = state.mappings.filter(m => m.Course === courseName);
+  const distinctSubs = new Set(courseMappings.map(m => m.SubCompetencyCode));
+  const ws = wb.addWorksheet(`${(c.CourseNumber || courseName).slice(0, 28)}`, {
+    views: [{ state: 'frozen', xSplit: 1, ySplit: 4 }],
+    pageSetup: { orientation: 'landscape', fitToPage: true, fitToWidth: 1, fitToHeight: 0 },
+    headerFooter: { oddHeader: '&LCurriculum Mapping&R&A', oddFooter: '&CPage &P of &N' }
+  });
+  // Title row + summary
+  // We'll determine visible subs (all leafs across all domains, optionally filtered)
+  const allSubs = DATA.subCompetencies.slice().sort((a, b) => compareCodes(a.Code, b.Code));
+  const visibleSubs = allSubs.filter(s => {
+    if (s.IsParent) return true;
+    if (showFilter === 'covered') return distinctSubs.has(s.Code);
+    if (showFilter === 'gaps')    return !distinctSubs.has(s.Code);
+    return true;
+  });
+  const totalCols = 3 + visibleSubs.length + 1;
+  ws.mergeCells(1, 1, 1, totalCols);
+  const titleCell = ws.getCell(1, 1);
+  titleCell.value = `${c.CourseNumber ? c.CourseNumber + ' — ' : ''}${c.CourseName}`;
+  titleCell.font = { bold: true, size: 14, color: { argb: 'FF000000' } };
+  ws.getRow(1).height = 22;
+  ws.mergeCells(2, 1, 2, totalCols);
+  const sumCell = ws.getCell(2, 1);
+  sumCell.value = `Semester ${c.Semester} · ${c.Credits} credit${c.Credits===1?'':'s'} · ${distinctSubs.size} sub-competencies covered · ${courseMappings.length} mappings · Generated ${new Date().toLocaleDateString()}`;
+  sumCell.font = { italic: true, size: 10, color: { argb: 'FF666666' } };
+
+  const headerRow = ['Course Outcome', 'Concepts', 'Topics',
+    ...visibleSubs.map(s => `${s.Code}\n${s.Text}`),
+    'Evaluation'];
+  ws.getRow(4).values = headerRow;
+  ws.getRow(4).height = 90;
+  ws.getRow(4).eachCell(cell => {
+    cell.fill = XL_HEADER_FILL;
+    cell.alignment = { wrapText: true, vertical: 'top', horizontal: 'center' };
+    cell.border = XL_THIN_BORDER;
+    cell.font = { color: { argb: 'FF000000' }, size: 10 };
+  });
+  [1, 2, 3, 4 + visibleSubs.length].forEach(col => {
+    const cell = ws.getCell(4, col);
+    cell.font = { bold: true, color: { argb: 'FF000000' }, size: 10 };
+    cell.alignment = { wrapText: true, vertical: 'middle', horizontal: 'left' };
+  });
+  ws.getColumn(1).width = 38;
+  ws.getColumn(2).width = 22;
+  ws.getColumn(3).width = 22;
+  for (let i = 0; i < visibleSubs.length; i++) ws.getColumn(4 + i).width = 8;
+  ws.getColumn(4 + visibleSubs.length).width = 18;
+
+  // Body: outcomes for this course
+  const courseOutcomes = DATA.courseOutcomes.filter(o => o.Course === courseName);
+  let rowNum = 5;
+  courseOutcomes.forEach(o => {
+    const meta = getOutcomeMeta(courseName, o.OutcomeText);
+    const conceptsStr = (meta.concepts || []).join(', ');
+    const xs = visibleSubs.map(s => state.mappings.some(m => m.Course === courseName && m.OutcomeText === o.OutcomeText && m.SubCompetencyCode === s.Code) ? 'X' : '');
+    ws.getRow(rowNum).values = [o.OutcomeText, conceptsStr, meta.topics || '', ...xs, meta.evaluation || ''];
+    ws.getRow(rowNum).eachCell({ includeEmpty: true }, cell => {
+      cell.alignment = { wrapText: true, vertical: 'top', horizontal: cell.col >= 4 && cell.col < 4 + visibleSubs.length ? 'center' : 'left' };
+      cell.font = { size: 10 };
+      cell.border = { top: {style:'hair', color:{argb:'FFCCCCCC'}}, left: {style:'hair', color:{argb:'FFCCCCCC'}}, bottom: {style:'hair', color:{argb:'FFCCCCCC'}}, right: {style:'hair', color:{argb:'FFCCCCCC'}} };
+    });
+    visibleSubs.forEach((s, i) => {
+      const cell = ws.getCell(rowNum, 4 + i);
+      if (cell.value === 'X') cell.font = { bold: true, size: 11, color: { argb: 'FF92003B' } };
+      if (s.IsParent) cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFAFAF9' } };
+    });
+    rowNum++;
+  });
+}
+
+// --- Progression Excel ---
+function buildProgressionWorkbook(wb) {
+  const ws = wb.addWorksheet('Progression', {
+    views: [{ state: 'frozen', ySplit: 10 }],
+    pageSetup: { orientation: 'landscape', fitToPage: true, fitToWidth: 1, fitToHeight: 0 }
+  });
+  const leafs = DATA.subCompetencies.filter(s => !s.IsParent);
+  const rows = leafs.map(s => {
+    const counts = subCompCountsBySemester(s.Code);
+    return { s, counts, cls: classifyProgression(counts) };
+  });
+  const wellLeveled = rows.filter(r => r.counts.semestersCovered >= 2).length;
+  const singleSem   = rows.filter(r => r.counts.semestersCovered === 1).length;
+  const zeroCov     = rows.filter(r => r.counts.total === 0).length;
+  const lateIntros  = rows.filter(r => r.counts.semestersCovered === 1 && r.counts[4] > 0);
+  const lateExamples = lateIntros.slice(0, 5).map(r => r.s.Code).join(', ');
+
+  const totalCols = 9;
+  let nextRow = writeCommentaryBlock(ws, [
+    `• ${wellLeveled} sub-comps appear in 2 or more semesters — solid reinforcement pattern.`,
+    `• ${singleSem} sub-comps appear in only 1 semester — review whether they need reinforcement.`,
+    `• ${zeroCov} sub-comps have zero coverage anywhere in the program.`,
+    lateIntros.length ? `• ${lateIntros.length} sub-comps appear only in S4 with no earlier exposure (e.g., ${lateExamples}) — potential "mastery without introduction" issue.` : '',
+  ].filter(Boolean), 1, totalCols);
+  // Header row
+  const headerRowIdx = nextRow + 1;
+  ws.getRow(headerRowIdx).values = ['Code', 'Domain', 'Sub-competency', 'S1', 'S2', 'S3', 'S4', 'Semesters covered', 'Status'];
+  ws.getRow(headerRowIdx).eachCell(c => { c.fill = XL_HEADER_FILL; c.font = XL_HEADER_FONT; c.alignment = { vertical: 'middle', horizontal: 'left' }; c.border = XL_THIN_BORDER; });
+  ws.getColumn(1).width = 10;
+  ws.getColumn(2).width = 8;
+  ws.getColumn(3).width = 60;
+  for (let i = 4; i <= 7; i++) ws.getColumn(i).width = 6;
+  ws.getColumn(8).width = 18;
+  ws.getColumn(9).width = 26;
+  // Body
+  let r = headerRowIdx + 1;
+  for (const row of rows.slice().sort((a,b) => a.s.Code.localeCompare(b.s.Code))) {
+    ws.getRow(r).values = [row.s.Code, row.s.Domain, row.s.Text, row.counts[1], row.counts[2], row.counts[3], row.counts[4], row.counts.semestersCovered, row.cls.label];
+    ws.getRow(r).eachCell({includeEmpty:true}, c => { c.font = XL_BODY_FONT; c.alignment = { vertical: 'top', wrapText: true }; });
+    [4,5,6,7].forEach(col => {
+      const cell = ws.getCell(r, col);
+      cell.fill = levHeatFill(cell.value || 0);
+      cell.font = levHeatFont(cell.value || 0);
+      cell.alignment = { vertical: 'middle', horizontal: 'center' };
+    });
+    r++;
+  }
+  ws.autoFilter = { from: { row: headerRowIdx, column: 1 }, to: { row: r - 1, column: totalCols } };
+}
+
+// --- Heatmap Excel ---
+function buildHeatmapWorkbook(wb) {
+  let leafs = DATA.subCompetencies.filter(s => !s.IsParent);
+  if (state.heatmapDomain !== 'all') leafs = leafs.filter(s => s.Domain === +state.heatmapDomain);
+  leafs = leafs.slice().sort((a,b) => a.Code.localeCompare(b.Code));
+  const rows = leafs.map(s => ({ s, counts: subCompCountsBySemester(s.Code), cls: classifyProgression(subCompCountsBySemester(s.Code)) }));
+  // Sheet 1: Heatmap
+  const sheetName = state.heatmapDomain === 'all' ? 'Heatmap' : `Heatmap D${state.heatmapDomain}`;
+  const ws = wb.addWorksheet(sheetName, { views: [{ state: 'frozen', ySplit: 10 }] });
+  const climbers   = rows.filter(r => r.cls.label === 'Strong climb').slice(0, 6).map(r => r.s.Code).join(', ');
+  const lateIntros = rows.filter(r => r.counts.semestersCovered === 1 && r.counts[4] > 0).slice(0, 6).map(r => r.s.Code).join(', ');
+  const sustained  = rows.filter(r => r.cls.label === 'Sustained' || r.cls.label === 'All 4 semesters').length;
+  const zeroCov    = rows.filter(r => r.counts.total === 0).length;
+  const totalCols = 7;
+  let nextRow = writeCommentaryBlock(ws, [
+    climbers ? `• Strong climbers: ${climbers} — textbook leveling.` : '',
+    lateIntros ? `• Late introductions (first appear in S4): ${lateIntros}.` : '',
+    `• ${sustained} sub-comps are sustained or hit in all 4 semesters.`,
+    zeroCov ? `• Zero coverage: ${zeroCov} sub-comps.` : '',
+  ].filter(Boolean), 1, totalCols);
+  const headerRowIdx = nextRow + 1;
+  ws.getRow(headerRowIdx).values = ['Code', 'Sub-competency', 'S1', 'S2', 'S3', 'S4', 'Pattern'];
+  ws.getRow(headerRowIdx).eachCell(c => { c.fill = XL_HEADER_FILL; c.font = XL_HEADER_FONT; c.alignment = { vertical: 'middle', horizontal: 'left' }; c.border = XL_THIN_BORDER; });
+  ws.getColumn(1).width = 10;
+  ws.getColumn(2).width = 60;
+  for (let i = 3; i <= 6; i++) ws.getColumn(i).width = 6;
+  ws.getColumn(7).width = 28;
+  let r = headerRowIdx + 1;
+  for (const row of rows) {
+    ws.getRow(r).values = [row.s.Code, row.s.Text, row.counts[1], row.counts[2], row.counts[3], row.counts[4], row.cls.label];
+    ws.getRow(r).eachCell({includeEmpty:true}, c => { c.font = XL_BODY_FONT; c.alignment = { vertical: 'top', wrapText: true }; });
+    [3,4,5,6].forEach(col => {
+      const cell = ws.getCell(r, col);
+      cell.fill = levHeatFill(cell.value || 0);
+      cell.font = levHeatFont(cell.value || 0);
+      cell.alignment = { vertical: 'middle', horizontal: 'center' };
+    });
+    r++;
+  }
+  ws.autoFilter = { from: { row: headerRowIdx, column: 1 }, to: { row: r - 1, column: totalCols } };
+  // Sheet 2: Patterns (grouped)
+  const ws2 = wb.addWorksheet('Patterns');
+  const patterns = ['Strong climb', 'All 4 semesters', 'Sustained', 'S4 only — late intro', 'Single semester (S1)', 'Single semester (S2)', 'Single semester (S3)', 'Zero coverage'];
+  let r2 = 1;
+  for (const p of patterns) {
+    const subset = rows.filter(rr => rr.cls.label === p);
+    if (!subset.length) continue;
+    ws2.getCell(r2, 1).value = p; ws2.getCell(r2, 1).font = { bold: true, size: 11, color: { argb: 'FF92003B' } }; r2++;
+    ws2.getRow(r2).values = ['Code', 'Sub-competency'];
+    ws2.getRow(r2).eachCell(c => { c.fill = XL_HEADER_FILL; c.font = XL_HEADER_FONT; });
+    r2++;
+    for (const row of subset) {
+      ws2.getRow(r2).values = [row.s.Code, row.s.Text];
+      r2++;
+    }
+    r2++;
+  }
+  ws2.getColumn(1).width = 12;
+  ws2.getColumn(2).width = 70;
+}
+
+// --- Course Comparisons Excel ---
+function buildComparisonsWorkbook(wb) {
+  const courses = state.comparisonCourses.map(name => DATA.courses.find(c => c.CourseName === name)).filter(Boolean);
+  if (courses.length < 2) return;
+  const stats = courses.map(c => {
+    const ms = state.mappings.filter(m => m.Course === c.CourseName);
+    const distinctSubs = new Set(ms.map(m => m.SubCompetencyCode));
+    const outs = DATA.courseOutcomes.filter(o => o.Course === c.CourseName).length;
+    return { c, ms, distinctSubs, outcomes: outs, density: outs ? (ms.length / outs).toFixed(1) : '—' };
+  });
+  const countMap = new Map();
+  stats.forEach(({ distinctSubs }) => distinctSubs.forEach(code => countMap.set(code, (countMap.get(code) || 0) + 1)));
+  // Summary sheet
+  const ws = wb.addWorksheet('Summary');
+  const totalCols = 1 + courses.length;
+  const courseLine = courses.map(c => `${c.CourseNumber || c.CourseName} (S${c.Semester})`).join(' → ');
+  const distincts = stats.map(s => s.distinctSubs.size);
+  const isClimbing = distincts.every((v, i) => i === 0 || v >= distincts[i - 1]);
+  const lastVsFirst = distincts[distincts.length - 1] - distincts[0];
+  const allCount = Array.from(countMap.values()).filter(n => n === stats.length).length;
+  const uniqueCount = Array.from(countMap.values()).filter(n => n === 1).length;
+  let nextRow = writeCommentaryBlock(ws, [
+    `• Comparing ${courses.length} courses (${courseLine}). Total of ${countMap.size} distinct sub-competencies touched across the selection.`,
+    `• ${allCount} sub-comps are touched by ALL selected courses — core competencies reinforced through the sequence.`,
+    `• ${uniqueCount} sub-comps are unique to one course in the selection.`,
+    isClimbing
+      ? `• Distinct sub-comp counts climb (or stay equal) across the sequence — healthy leveling.`
+      : `• Distinct sub-comp counts do not strictly climb (${distincts.join(' → ')}). For paired courses, later courses should typically expand or at least match.`,
+    lastVsFirst < 0 ? `• Last course covers ${Math.abs(lastVsFirst)} fewer distinct sub-comps than the first — review whether intentional capstone narrowing or a leveling gap.` : '',
+  ].filter(Boolean), 1, totalCols);
+  const r0 = nextRow + 1;
+  ws.getRow(r0).values = ['', ...courses.map(c => `${c.CourseNumber || c.CourseName}\nS${c.Semester}`)];
+  ws.getRow(r0).eachCell(c => { c.fill = XL_HEADER_FILL; c.font = XL_HEADER_FONT; c.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true }; c.border = XL_THIN_BORDER; });
+  ws.getRow(r0).height = 30;
+  const writeRow = (label, fn, idx) => {
+    ws.getRow(r0 + idx).values = [label, ...stats.map(fn)];
+    ws.getRow(r0 + idx).eachCell({includeEmpty:true}, c => { c.font = XL_BODY_FONT; c.alignment = { horizontal: c.col === 1 ? 'left' : 'center' }; c.border = XL_THIN_BORDER; });
+    ws.getCell(r0 + idx, 1).font = { bold: true, size: 10 };
+  };
+  writeRow('Distinct sub-comps', s => s.distinctSubs.size, 1);
+  writeRow('Total mappings',     s => s.ms.length,         2);
+  writeRow('Outcomes',           s => s.outcomes,          3);
+  writeRow('Mappings / outcome', s => s.density,           4);
+  ws.getColumn(1).width = 24;
+  for (let i = 2; i <= 1 + courses.length; i++) ws.getColumn(i).width = 22;
+
+  // Shared / Partial / Unique sheets
+  const allCodes = Array.from(countMap.entries()).filter(([_, n]) => n === stats.length).map(([code]) => code).sort();
+  const partial2 = Array.from(countMap.entries()).filter(([_, n]) => n === 2).map(([code]) => code).sort();
+  const partial3 = Array.from(countMap.entries()).filter(([_, n]) => n === 3).map(([code]) => code).sort();
+  const unique  = Array.from(countMap.entries()).filter(([_, n]) => n === 1).map(([code]) => code).sort();
+
+  const writeListSheet = (sheetName, codes) => {
+    const ws2 = wb.addWorksheet(sheetName);
+    ws2.getRow(1).values = ['Code', 'Sub-competency', ...courses.map(c => c.CourseNumber || c.CourseName.slice(0,18))];
+    ws2.getRow(1).eachCell(c => { c.fill = XL_HEADER_FILL; c.font = XL_HEADER_FONT; });
+    ws2.getColumn(1).width = 10;
+    ws2.getColumn(2).width = 60;
+    for (let i = 3; i <= 2 + courses.length; i++) ws2.getColumn(i).width = 14;
+    let rr = 2;
+    for (const code of codes) {
+      const sub = DATA.subCompetencies.find(s => s.Code === code);
+      const cells = courses.map(c => state.mappings.some(m => m.Course === c.CourseName && m.SubCompetencyCode === code) ? '✓' : '');
+      ws2.getRow(rr).values = [code, sub?.Text || '', ...cells];
+      ws2.getRow(rr).eachCell({includeEmpty:true}, c => { c.font = XL_BODY_FONT; c.alignment = { wrapText: true, vertical: 'top', horizontal: c.col <= 2 ? 'left' : 'center' }; });
+      rr++;
+    }
+  };
+  if (allCodes.length) writeListSheet('Shared by all', allCodes);
+  if (partial3.length || partial2.length) writeListSheet('Partial overlap', [...partial3, ...partial2]);
+  if (unique.length) writeListSheet('Unique to one', unique);
+}
+
+// --- Domain Breadth Excel ---
+function buildBreadthWorkbook(wb) {
+  const ws = wb.addWorksheet('Domain Breadth');
+  const rows = DATA.domains.map(d => {
+    const breadth = domainBreadthBySemester(d.DomainNumber);
+    const trend = classifyBreadthTrend(breadth);
+    return { d, breadth, trend };
+  });
+  const climbers = rows.filter(r => r.trend.label.startsWith('↗')).map(r => `D${r.d.DomainNumber}`).join(', ');
+  const drops = rows.filter(r => r.trend.cls === 'lev-badge-alert').map(r => `D${r.d.DomainNumber} (${r.d.DomainName})`).join('; ');
+  const uShape = rows.filter(r => r.trend.label === 'U-shape').map(r => `D${r.d.DomainNumber}`).join(', ');
+  const totalCols = 6;
+  let nextRow = writeCommentaryBlock(ws, [
+    `• ${rows.filter(r => r.trend.label.startsWith('↗')).length} of ${rows.length} domains show a steady or strong climb from S1 to S4.`,
+    drops ? `• Domains with drops: ${drops} — review for whether earlier coverage gets reinforced later.` : '',
+    uShape ? `• U-shape domains: ${uShape} — covered early, dropped, returns at the end.` : '',
+    climbers ? `• Climbing domains (any upward trend): ${climbers}.` : '',
+  ].filter(Boolean), 1, totalCols);
+  const r0 = nextRow + 1;
+  const coursesPerSem = [1,2,3,4].map(s => DATA.courses.filter(c => c.Semester === s).length);
+  ws.getRow(r0).values = ['Domain', `S1 (${coursesPerSem[0]} courses)`, `S2 (${coursesPerSem[1]} courses)`, `S3 (${coursesPerSem[2]} courses)`, `S4 (${coursesPerSem[3]} courses)`, 'Trend'];
+  ws.getRow(r0).eachCell(c => { c.fill = XL_HEADER_FILL; c.font = XL_HEADER_FONT; c.alignment = { vertical: 'middle', horizontal: 'left' }; c.border = XL_THIN_BORDER; });
+  ws.getColumn(1).width = 42;
+  for (let i = 2; i <= 5; i++) ws.getColumn(i).width = 18;
+  ws.getColumn(6).width = 22;
+  let r = r0 + 1;
+  for (const row of rows) {
+    ws.getRow(r).values = [
+      `${row.d.DomainNumber} — ${row.d.DomainName}`,
+      `${row.breadth[1].pct}% (${row.breadth[1].covered}/${row.breadth[1].total})`,
+      `${row.breadth[2].pct}% (${row.breadth[2].covered}/${row.breadth[2].total})`,
+      `${row.breadth[3].pct}% (${row.breadth[3].covered}/${row.breadth[3].total})`,
+      `${row.breadth[4].pct}% (${row.breadth[4].covered}/${row.breadth[4].total})`,
+      row.trend.label
+    ];
+    ws.getRow(r).eachCell({includeEmpty:true}, c => { c.font = XL_BODY_FONT; c.alignment = { horizontal: c.col === 1 ? 'left' : 'center', wrapText: true }; c.border = XL_THIN_BORDER; });
+    [2,3,4,5].forEach(col => {
+      const pct = [row.breadth[1].pct, row.breadth[2].pct, row.breadth[3].pct, row.breadth[4].pct][col - 2];
+      const cell = ws.getCell(r, col);
+      const bucket = Math.ceil(pct / 15);
+      cell.fill = levHeatFill(bucket);
+      cell.font = levHeatFont(bucket);
+    });
+    r++;
+  }
+}
+
+// --- Wire up Excel buttons (By Course + Leveling) ---
+document.getElementById('bc-btn-xlsx')?.addEventListener('click', async () => {
+  const courseName = $('#bc-course').value;
+  if (!courseName) return;
+  const c = DATA.courses.find(x => x.CourseName === courseName);
+  const showFilter = $('#bc-show').value;
+  const wb = new ExcelJS.Workbook();
+  wb.creator = 'Curriculum Mapping App';
+  wb.created = new Date();
+  buildByCourseSheet(wb, courseName, showFilter);
+  const slug = (c.CourseNumber || courseName).replace(/[^A-Za-z0-9]/g, '_');
+  await downloadWorkbook(wb, `Curriculum_Map_${slug}_${new Date().toISOString().slice(0,10)}.xlsx`);
+});
+
+document.getElementById('lev-btn-xlsx')?.addEventListener('click', async () => {
+  const wb = new ExcelJS.Workbook();
+  wb.creator = 'Curriculum Mapping App';
+  wb.created = new Date();
+  const date = new Date().toISOString().slice(0,10);
+  let filename = '';
+  switch (state.reportLeveling) {
+    case 'progression': buildProgressionWorkbook(wb); filename = `Leveling_Progression_${date}.xlsx`; break;
+    case 'heatmap':     buildHeatmapWorkbook(wb);     filename = `Leveling_Heatmap_${state.heatmapDomain === 'all' ? 'AllDomains' : 'D' + state.heatmapDomain}_${date}.xlsx`; break;
+    case 'comparisons': buildComparisonsWorkbook(wb); filename = `Leveling_Course_Comparisons_${date}.xlsx`; break;
+    case 'breadth':     buildBreadthWorkbook(wb);     filename = `Leveling_Domain_Breadth_${date}.xlsx`; break;
+  }
+  if (wb.worksheets.length === 0) return; // empty (e.g. comparisons with <2 courses)
+  await downloadWorkbook(wb, filename);
 });
 
 // ---------- Data / Backup-Restore ----------
