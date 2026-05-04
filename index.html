@@ -897,9 +897,8 @@ function applyRealtimeChange(payload) {
 }
 
 function courseTitle(c) {
-  const num = c.CourseNumber ? `<span class="course-num mr-2">${escapeHtml(c.CourseNumber)}</span>` : '';
   const credits = c.Credits != null ? `<span class="brand-text-muted text-xs font-normal ml-1">(${c.Credits} credit${c.Credits === 1 ? '' : 's'})</span>` : '';
-  return `${num}${escapeHtml(c.CourseName)}${credits}`;
+  return `${escapeHtml(c.CourseName)}${credits}`;
 }
 
 // ---------- Tab switching ----------
@@ -965,9 +964,8 @@ function renderHome() {
       const card = document.createElement('button');
       card.className = 'tile-tab';
       const credits = c.Credits != null ? `${c.Credits} cr` : '';
-      const courseNum = c.CourseNumber || '';
       card.innerHTML = `
-        ${courseNum ? `<div class="tile-num-line">${escapeHtml(courseNum)}</div>` : '<div class="tile-num-line">&nbsp;</div>'}
+        <div class="tile-num-line">&nbsp;</div>
         ${credits ? `<div class="tile-credits">${escapeHtml(credits)}</div>` : ''}
         <div class="tile-name">${escapeHtml(c.CourseName)}</div>
         <div class="tile-stats">
@@ -998,8 +996,7 @@ function populateEditorCoursePicker() {
     if (!list.length) return;
     html.push(`<optgroup label="${escapeHtml(semesterLabel(s))}">`);
     list.forEach(c => {
-      const num = c.CourseNumber ? c.CourseNumber + ' — ' : '';
-      html.push(`<option value="${escapeHtml(c.CourseName)}">${escapeHtml(num + c.CourseName)}</option>`);
+      html.push(`<option value="${escapeHtml(c.CourseName)}">${escapeHtml(c.CourseName)}</option>`);
     });
     html.push('</optgroup>');
   });
@@ -1234,9 +1231,8 @@ function renderMatrixTable() {
     }
     const rowBg = idx%2 ? 'bg-stone-100' : 'bg-white';
     h += `<tr class="${rowBg} hover:bg-amber-50">`;
-    const numHtml = c.CourseNumber ? `<span class="course-num mr-2">${escapeHtml(c.CourseNumber)}</span>` : '';
     const credHtml = c.Credits != null ? ` <span class="brand-text-muted">(${c.Credits})</span>` : '';
-    h += `<td class="p-2 sticky left-0 ${rowBg} border-r brand-border-cream text-xs font-medium">${numHtml}${escapeHtml(c.CourseName)}${credHtml}</td>`;
+    h += `<td class="p-2 sticky left-0 ${rowBg} border-r brand-border-cream text-xs font-medium">${escapeHtml(c.CourseName)}${credHtml}</td>`;
     subs.forEach(s => {
       const mapped = state.mappings.some(m => m.Course === c.CourseName && m.SubCompetencyCode === s.Code);
       h += mapped
@@ -1311,7 +1307,7 @@ function renderReports() {
   const bcSel = $('#bc-course');
   if (bcSel && bcSel.options.length === 0) {
     const sorted = DATA.courses.slice().sort((a, b) => (a.Semester || 99) - (b.Semester || 99) || a.CourseName.localeCompare(b.CourseName));
-    bcSel.innerHTML = sorted.map(c => `<option value="${escapeHtml(c.CourseName)}">${c.CourseNumber ? c.CourseNumber + ' — ' : ''}${escapeHtml(c.CourseName)} · S${c.Semester}</option>`).join('');
+    bcSel.innerHTML = sorted.map(c => `<option value="${escapeHtml(c.CourseName)}">${escapeHtml(c.CourseName)} · S${c.Semester}</option>`).join('');
   }
   // Populate "Add a course" dropdown for Course Comparisons (excludes already-picked)
   refreshComparisonsAddDropdown();
@@ -1347,7 +1343,7 @@ function refreshComparisonChips() {
   if (!wrap) return;
   wrap.innerHTML = state.comparisonCourses.map(name => {
     const c = DATA.courses.find(x => x.CourseName === name);
-    const label = c?.CourseNumber ? `${c.CourseNumber} · S${c.Semester}` : name.slice(0, 24);
+    const label = c ? `${c.CourseName} · S${c.Semester}` : name.slice(0, 24);
     return `<span class="pick-chip">${escapeHtml(label)}<span class="x" data-name="${escapeHtml(name)}">×</span></span>`;
   }).join('');
   wrap.querySelectorAll('.x').forEach(x => x.addEventListener('click', () => {
@@ -1367,7 +1363,7 @@ function refreshComparisonsAddDropdown() {
   sel.innerHTML = (atMax
     ? '<option value="">— Maximum 4 reached —</option>'
     : '<option value="">— Choose a course to add —</option>') +
-    available.map(c => `<option value="${escapeHtml(c.CourseName)}">${c.CourseNumber ? c.CourseNumber + ' — ' : ''}${escapeHtml(c.CourseName)} · S${c.Semester}</option>`).join('');
+    available.map(c => `<option value="${escapeHtml(c.CourseName)}">${escapeHtml(c.CourseName)} · S${c.Semester}</option>`).join('');
   sel.disabled = atMax;
 }
 
@@ -1681,7 +1677,7 @@ function drawByCourseReport() {
   const distinctSubs = new Set(courseMappings.map(m => m.SubCompetencyCode));
   const headerHtml = `
     <div class="report-meta">
-      <div class="title">${c.CourseNumber ? escapeHtml(c.CourseNumber) + ' — ' : ''}${escapeHtml(c.CourseName)}</div>
+      <div class="title">${escapeHtml(c.CourseName)}</div>
       <div>Semester ${c.Semester} · ${c.Credits} credit${c.Credits===1?'':'s'} · ${distinctSubs.size} sub-competencies covered · ${courseMappings.length} mappings · Generated ${new Date().toLocaleDateString()}</div>
     </div>`;
 
@@ -1783,7 +1779,7 @@ function renderProgressionView() {
 
   const commentary = `
     <div class="lev-commentary">
-      <strong>📊 Auto-generated commentary:</strong><br><br>
+      <strong>📊 Summary:</strong><br><br>
       <span class="c-icon ok">●</span> <strong>${wellLeveled} sub-comps</strong> appear in 2 or more semesters — solid reinforcement pattern.<br>
       <span class="c-icon warn">●</span> <strong>${singleSem} sub-comps</strong> appear in only 1 semester — review whether they need reinforcement.<br>
       <span class="c-icon alert">●</span> <strong>${zeroCov} sub-comps</strong> have zero coverage anywhere in the program.<br>
@@ -1799,7 +1795,7 @@ function renderProgressionView() {
     const subBlocks = subRows.map(r => {
       const tableRows = r.touch.length === 0
         ? '<tr><td colspan="3" style="text-align:center;color:var(--brand-muted);font-style:italic">No coverage in any course.</td></tr>'
-        : r.touch.map(t => `<tr><td class="center">S${t.semester}</td><td>${t.courseNumber ? `<span style="font-family:Menlo,monospace;color:var(--brand-primary);font-weight:600">${escapeHtml(t.courseNumber)}</span> ` : ''}${escapeHtml(t.course)}</td><td>${escapeHtml(t.outcome)}</td></tr>`).join('');
+        : r.touch.map(t => `<tr><td class="center">S${t.semester}</td><td>${escapeHtml(t.course)}</td><td>${escapeHtml(t.outcome)}</td></tr>`).join('');
       return `<div style="margin-bottom:14px">
         <h4 style="font-size:12.5px;margin:8px 0 4px"><span class="lev-pill">Domain ${r.s.Domain}</span> &nbsp; <span style="font-family:Menlo,monospace;color:var(--brand-primary);font-weight:700">${escapeHtml(r.s.Code)}</span> &nbsp; ${escapeHtml(r.s.Text)} &nbsp; <span class="lev-badge ${r.cls.cls}">${escapeHtml(r.cls.label)}</span></h4>
         <table class="lev-table"><thead><tr><th>Semester</th><th>Course</th><th>Outcome</th></tr></thead><tbody>${tableRows}</tbody></table>
@@ -1841,7 +1837,7 @@ function renderHeatmapView() {
 
   const commentary = `
     <div class="lev-commentary">
-      <strong>📊 Auto-generated commentary:</strong><br><br>
+      <strong>📊 Summary:</strong><br><br>
       ${climbers.length ? `<span class="c-icon ok">●</span> <strong>Strong climbers</strong> (each semester ≥ previous): ${escapeHtml(climbers.join(', '))} — textbook leveling.<br>` : ''}
       ${lateIntros.length ? `<span class="c-icon warn">●</span> <strong>Late introductions</strong> (first appear in S4): ${escapeHtml(lateIntros.join(', '))}.<br>` : ''}
       <span class="c-icon ok">●</span> <strong>${sustained} sub-comps</strong> are sustained or hit in all 4 semesters.<br>
@@ -1905,13 +1901,13 @@ function renderComparisonsView() {
   }
   // Commentary
   const totalSubsTouched = countMap.size;
-  const courseLine = courses.map(c => `${c.CourseNumber || c.CourseName} (S${c.Semester})`).join(' → ');
+  const courseLine = courses.map(c => `${c.CourseName} (S${c.Semester})`).join(' → ');
   const distincts = stats.map(s => s.distinctSubs.size);
   const isClimbing = distincts.every((v, i) => i === 0 || v >= distincts[i - 1]);
   const lastVsFirst = distincts[distincts.length - 1] - distincts[0];
   const commentary = `
     <div class="lev-commentary">
-      <strong>📊 Auto-generated commentary:</strong><br><br>
+      <strong>📊 Summary:</strong><br><br>
       <span class="c-icon ok">●</span> Comparing <strong>${courses.length} courses</strong> (${escapeHtml(courseLine)}). Total of <strong>${totalSubsTouched}</strong> distinct sub-competencies touched across the selection.<br>
       <span class="c-icon ${buckets.all.length ? 'ok' : 'warn'}">●</span> <strong>${buckets.all.length} sub-comps</strong> are touched by ALL selected courses — the core competencies reinforced through the sequence.<br>
       ${(buckets.partial[3]?.length || buckets.partial[2]?.length) ? `<span class="c-icon ok">●</span> <strong>${(buckets.partial[3]?.length || 0) + (buckets.partial[2]?.length || 0)} sub-comps</strong> overlap partially (touched by 2-3 of the selected courses).<br>` : ''}
@@ -1923,7 +1919,7 @@ function renderComparisonsView() {
     </div>`;
 
   // Stats table
-  const statsHeader = `<tr><th></th>${stats.map(s => `<th class="center">${s.c.CourseNumber || ''}<br><span style="font-weight:400;font-size:10px;color:var(--brand-muted)">${escapeHtml(s.c.CourseName.slice(0,28))} · S${s.c.Semester}</span></th>`).join('')}</tr>`;
+  const statsHeader = `<tr><th></th>${stats.map(s => `<th class="center"><span style="font-weight:600;font-size:11px">${escapeHtml(s.c.CourseName.slice(0,28))}</span><br><span style="font-weight:400;font-size:10px;color:var(--brand-muted)">S${s.c.Semester}</span></th>`).join('')}</tr>`;
   const statRow = (label, fn) => `<tr><td><strong>${label}</strong></td>${stats.map(s => `<td class="center">${fn(s)}</td>`).join('')}</tr>`;
   const statsTable = `<table class="lev-table">
     <thead>${statsHeader}</thead>
@@ -1976,7 +1972,7 @@ function renderBreadthView() {
   }).map(r => `D${r.d.DomainNumber} (${r.d.DomainName})`);
   const commentary = `
     <div class="lev-commentary">
-      <strong>📊 Auto-generated commentary:</strong><br><br>
+      <strong>📊 Summary:</strong><br><br>
       <span class="c-icon ok">●</span> <strong>${climbers} of ${rows.length} domains</strong> show a steady or strong climb from S1 to S4 — exactly the leveling pattern accreditors look for.<br>
       ${dropDomains.length ? `<span class="c-icon alert">●</span> <strong>Domains with drops</strong>: ${escapeHtml(dropDomains.join(', '))} — review for whether earlier coverage gets reinforced later.<br>` : ''}
       ${uShape.length ? `<span class="c-icon warn">●</span> <strong>U-shape domains</strong>: ${escapeHtml(uShape.join(', '))} — covered early, dropped, returns at the end. Common but worth verifying intentional.<br>` : ''}
@@ -2197,7 +2193,7 @@ function buildByCourseSheet(wb, courseName, showFilter) {
   const c = DATA.courses.find(x => x.CourseName === courseName);
   const courseMappings = state.mappings.filter(m => m.Course === courseName);
   const distinctSubs = new Set(courseMappings.map(m => m.SubCompetencyCode));
-  const ws = wb.addWorksheet(`${(c.CourseNumber || courseName).slice(0, 28)}`, {
+  const ws = wb.addWorksheet(`${courseName.slice(0, 28)}`, {
     views: [{ state: 'frozen', xSplit: 1, ySplit: 4 }],
     pageSetup: { orientation: 'landscape', fitToPage: true, fitToWidth: 1, fitToHeight: 0 },
     headerFooter: { oddHeader: '&LCurriculum Mapping&R&A', oddFooter: '&CPage &P of &N' }
@@ -2214,7 +2210,7 @@ function buildByCourseSheet(wb, courseName, showFilter) {
   const totalCols = 3 + visibleSubs.length + 1;
   ws.mergeCells(1, 1, 1, totalCols);
   const titleCell = ws.getCell(1, 1);
-  titleCell.value = `${c.CourseNumber ? c.CourseNumber + ' — ' : ''}${c.CourseName}`;
+  titleCell.value = `${c.CourseName}`;
   titleCell.font = { bold: true, size: 14, color: { argb: 'FF000000' } };
   ws.getRow(1).height = 22;
   ws.mergeCells(2, 1, 2, totalCols);
@@ -2392,7 +2388,7 @@ function buildComparisonsWorkbook(wb) {
   // Summary sheet
   const ws = wb.addWorksheet('Summary');
   const totalCols = 1 + courses.length;
-  const courseLine = courses.map(c => `${c.CourseNumber || c.CourseName} (S${c.Semester})`).join(' → ');
+  const courseLine = courses.map(c => `${c.CourseName} (S${c.Semester})`).join(' → ');
   const distincts = stats.map(s => s.distinctSubs.size);
   const isClimbing = distincts.every((v, i) => i === 0 || v >= distincts[i - 1]);
   const lastVsFirst = distincts[distincts.length - 1] - distincts[0];
@@ -2408,7 +2404,7 @@ function buildComparisonsWorkbook(wb) {
     lastVsFirst < 0 ? `• Last course covers ${Math.abs(lastVsFirst)} fewer distinct sub-comps than the first — review whether intentional capstone narrowing or a leveling gap.` : '',
   ].filter(Boolean), 1, totalCols);
   const r0 = nextRow + 1;
-  ws.getRow(r0).values = ['', ...courses.map(c => `${c.CourseNumber || c.CourseName}\nS${c.Semester}`)];
+  ws.getRow(r0).values = ['', ...courses.map(c => `${c.CourseName}\nS${c.Semester}`)];
   ws.getRow(r0).eachCell(c => { c.fill = XL_HEADER_FILL; c.font = XL_HEADER_FONT; c.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true }; c.border = XL_THIN_BORDER; });
   ws.getRow(r0).height = 30;
   const writeRow = (label, fn, idx) => {
@@ -2431,7 +2427,7 @@ function buildComparisonsWorkbook(wb) {
 
   const writeListSheet = (sheetName, codes) => {
     const ws2 = wb.addWorksheet(sheetName);
-    ws2.getRow(1).values = ['Code', 'Sub-competency', ...courses.map(c => c.CourseNumber || c.CourseName.slice(0,18))];
+    ws2.getRow(1).values = ['Code', 'Sub-competency', ...courses.map(c => c.CourseName.slice(0,18))];
     ws2.getRow(1).eachCell(c => { c.fill = XL_HEADER_FILL; c.font = XL_HEADER_FONT; });
     ws2.getColumn(1).width = 10;
     ws2.getColumn(2).width = 60;
@@ -2507,7 +2503,7 @@ document.getElementById('bc-btn-xlsx')?.addEventListener('click', async () => {
   wb.creator = 'Curriculum Mapping App';
   wb.created = new Date();
   buildByCourseSheet(wb, courseName, showFilter);
-  const slug = (c.CourseNumber || courseName).replace(/[^A-Za-z0-9]/g, '_');
+  const slug = courseName.replace(/[^A-Za-z0-9]/g, '_');
   await downloadWorkbook(wb, `Curriculum_Map_${slug}_${new Date().toISOString().slice(0,10)}.xlsx`);
 });
 
