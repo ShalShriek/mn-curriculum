@@ -60,6 +60,54 @@
   }
   .counter-pulse { display: inline-block; animation: counter-pulse 1.4s ease-out; font-weight: 700; }
 
+  /* ---------- Concept chips (multi-select) ---------- */
+  .chip-strip { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    display: inline-flex; align-items: center;
+    padding: 6px 12px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1.5px solid var(--brand-cream);
+    background: #fff;
+    color: var(--brand-text);
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+    user-select: none;
+    line-height: 1.2;
+  }
+  .chip:hover { border-color: #d6cdb1; }
+  .chip.selected {
+    background: var(--brand-primary);
+    color: #fff;
+    border-color: var(--brand-primary);
+  }
+  .chip .chip-check {
+    display: inline-block; width: 0; margin-right: 0; opacity: 0;
+    transition: opacity 0.1s, width 0.12s, margin-right 0.12s;
+    overflow: hidden;
+  }
+  .chip.selected .chip-check { opacity: 1; width: 12px; margin-right: 5px; }
+  .chip-count-badge {
+    font-size: 10px; font-weight: 600;
+    color: var(--brand-primary);
+    background: #fef3c7;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    margin-left: 6px;
+    text-transform: none; letter-spacing: 0;
+  }
+  .concept-warn {
+    font-size: 11px; color: #b91c1c; font-weight: 500; margin-top: 4px;
+  }
+  .outcome-missing-warn {
+    display: inline-block;
+    color: #b45309;
+    font-size: 11px;
+    margin-left: 4px;
+    font-weight: 700;
+  }
+
   /* ---------- Report styles (screen + print) ---------- */
   .report-domain      { page-break-inside: avoid; break-inside: avoid; margin-bottom: 32px; }
   .report-domain + .report-domain { page-break-before: always; break-before: page; padding-top: 24px; border-top: 1px dashed #ccc; }
@@ -420,14 +468,28 @@ async function fetchAllMappings() {
   return all;
 }
 
-// V2: outcome_meta — per-outcome Concept (single-select), Topics (free text), Evaluation (free text).
+// V2: outcome_meta — per-outcome Concepts (multi-select array), Topics (free text), Evaluation (free text).
 // Keyed by `${course} ${outcome_text}`. Values upserted on edit.
 const metaKey = (course, outcome) => `${course}\u001f${outcome}`;
 function dbRowToMeta(r) {
-  return { course: r.course, outcome_text: r.outcome_text, concept: r.concept || '', topics: r.topics || '', evaluation: r.evaluation || '' };
+  // Backward-compat: rows that still carry a legacy `concept` (string) become a one-element array.
+  let concepts = [];
+  if (Array.isArray(r.concepts)) concepts = r.concepts.filter(Boolean);
+  else if (r.concept) concepts = [r.concept];
+  return { course: r.course, outcome_text: r.outcome_text, concepts, topics: r.topics || '', evaluation: r.evaluation || '' };
 }
 function metaToDbRow(m) {
-  return { course: m.course, outcome_text: m.outcome_text, concept: m.concept || null, topics: m.topics || null, evaluation: m.evaluation || null };
+  const concepts = Array.isArray(m.concepts) ? m.concepts.filter(Boolean) : [];
+  return { course: m.course, outcome_text: m.outcome_text, concepts: concepts.length ? concepts : null, topics: m.topics || null, evaluation: m.evaluation || null };
+}
+// Order-insensitive equality on string arrays (used by realtime echo dedupe).
+function arraysEqualUnordered(a, b) {
+  const A = Array.isArray(a) ? a : [];
+  const B = Array.isArray(b) ? b : [];
+  if (A.length !== B.length) return false;
+  const sa = A.slice().sort(), sb = B.slice().sort();
+  for (let i = 0; i < sa.length; i++) if (sa[i] !== sb[i]) return false;
+  return true;
 }
 async function fetchAllOutcomeMeta() {
   const all = [];
@@ -443,7 +505,7 @@ async function fetchAllOutcomeMeta() {
   return all;
 }
 function getOutcomeMeta(course, outcome) {
-  return state.outcomeMeta.get(metaKey(course, outcome)) || { course, outcome_text: outcome, concept: '', topics: '', evaluation: '' };
+  return state.outcomeMeta.get(metaKey(course, outcome)) || { course, outcome_text: outcome, concepts: [], topics: '', evaluation: '' };
 }
 async function setOutcomeMeta(course, outcome, patch) {
   const cur = getOutcomeMeta(course, outcome);
@@ -467,7 +529,7 @@ function applyMetaRealtimeChange(payload) {
     const next = dbRowToMeta(r);
     // If local state already matches, this is the echo of our own write — skip render so the
     // editor doesn't redraw and snap focus / scroll position.
-    if (cur && cur.concept === next.concept && cur.topics === next.topics && cur.evaluation === next.evaluation) return;
+    if (cur && arraysEqualUnordered(cur.concepts, next.concepts) && cur.topics === next.topics && cur.evaluation === next.evaluation) return;
     state.outcomeMeta.set(k, next);
   }
   flashLiveCount();
@@ -711,11 +773,13 @@ function renderEditor() {
   }
   courseOutcomes.forEach(o => {
     const mappedCount = state.mappings.filter(m => m.Course === o.Course && m.OutcomeText === o.OutcomeText).length;
+    const oMeta = getOutcomeMeta(o.Course, o.OutcomeText);
+    const missingConcept = !oMeta.concepts || oMeta.concepts.length === 0;
     const row = document.createElement('button');
     const active = state.selectedOutcome === o.OutcomeText;
     row.className = 'block w-full text-left p-3 border-b brand-border-cream hover:bg-stone-50 ' + (active ? 'brand-bg-cream border-l-4 brand-border-primary' : '');
     row.innerHTML = `
-      <div class="text-sm leading-snug ${active ? 'font-semibold brand-text-primary' : ''}">${escapeHtml(o.OutcomeText)}</div>
+      <div class="text-sm leading-snug ${active ? 'font-semibold brand-text-primary' : ''}">${escapeHtml(o.OutcomeText)}${missingConcept ? '<span class="outcome-missing-warn" title="No concept selected">⚠</span>' : ''}</div>
       <div class="text-xs brand-text-muted mt-1">${mappedCount} sub-competenc${mappedCount===1?'y':'ies'} mapped</div>`;
     row.addEventListener('click', () => { state.selectedOutcome = o.OutcomeText; renderEditor(); });
     outcomesList.appendChild(row);
@@ -748,22 +812,32 @@ function renderSubsList() {
   const totalChecked = state.mappings.filter(m => m.Course === state.selectedCourse && m.OutcomeText === state.selectedOutcome).length;
   $('#checked-count').textContent = totalChecked + ' checked';
 
-  // V2: Collapsible Details panel for this outcome (Concept / Topics / Evaluation)
+  // V2: Collapsible Details panel for this outcome (Concepts / Topics / Evaluation)
   const meta = getOutcomeMeta(state.selectedCourse, state.selectedOutcome);
-  const hasMeta = !!(meta.concept || meta.topics || meta.evaluation);
-  const conceptOpts = ['<option value="">— Select a concept —</option>',
-    ...DATA.concepts.map(c => `<option value="${escapeHtml(c)}"${meta.concept === c ? ' selected' : ''}>${escapeHtml(c)}</option>`)
-  ].join('');
+  const hasConcepts = Array.isArray(meta.concepts) && meta.concepts.length > 0;
+  const hasMeta = hasConcepts || meta.topics || meta.evaluation;
+  const conceptChips = DATA.concepts.map(c => {
+    const sel = hasConcepts && meta.concepts.includes(c);
+    return `<span class="chip${sel ? ' selected' : ''}" data-concept="${escapeHtml(c)}" role="button" tabindex="0" aria-pressed="${sel}">
+      <span class="chip-check" aria-hidden="true">✓</span>${escapeHtml(c)}
+    </span>`;
+  }).join('');
+  const conceptCountBadge = hasConcepts
+    ? `<span class="chip-count-badge">${meta.concepts.length} selected</span>`
+    : `<span class="chip-count-badge" style="background:#fee2e2;color:#b91c1c">0 selected</span>`;
+  const conceptWarn = hasConcepts ? '' : '<div class="concept-warn">Pick at least one concept.</div>';
+
   let h = `
     <details class="mb-3 border brand-border-cream rounded" ${hasMeta ? 'open' : ''} id="outcome-details">
       <summary class="px-3 py-2 brand-bg-cream text-[11px] font-semibold uppercase brand-text-primary hover:opacity-90 flex items-center justify-between tracking-wider cursor-pointer">
         <span>▾ Outcome Details${hasMeta ? ' <span class="text-[10px] brand-text-muted normal-case font-normal ml-1">(filled)</span>' : ''}</span>
-        <span class="text-[10px] brand-text-muted normal-case font-normal">Concept · Topics · Evaluation</span>
+        <span class="text-[10px] brand-text-muted normal-case font-normal">Concepts · Topics · Evaluation</span>
       </summary>
       <div class="p-3 space-y-3">
         <div>
-          <label class="block text-[11px] font-semibold uppercase brand-text-muted mb-1 tracking-wider">Concept (AACN)</label>
-          <select id="meta-concept" class="w-full text-sm border brand-border-cream rounded px-2 py-1.5 bg-white">${conceptOpts}</select>
+          <label class="block text-[11px] font-semibold uppercase brand-text-muted mb-1 tracking-wider">Concepts (AACN)${conceptCountBadge}</label>
+          <div id="meta-concepts" class="chip-strip">${conceptChips}</div>
+          ${conceptWarn}
         </div>
         <div>
           <label class="block text-[11px] font-semibold uppercase brand-text-muted mb-1 tracking-wider">Topics</label>
@@ -810,13 +884,41 @@ function renderSubsList() {
   });
 
   // V2: Outcome Details handlers.
-  // Concept: saves on change. Topics/Evaluation: save on blur (when you click out of the field).
-  const conceptEl = document.getElementById('meta-concept');
+  // Concepts: chip click toggles in/out of the array, saves immediately.
+  // Topics/Evaluation: save on blur (when you click out of the field).
+  const conceptsWrap = document.getElementById('meta-concepts');
   const topicsEl = document.getElementById('meta-topics');
   const evalEl = document.getElementById('meta-evaluation');
-  if (conceptEl) {
-    conceptEl.addEventListener('change', () => {
-      setOutcomeMeta(state.selectedCourse, state.selectedOutcome, { concept: conceptEl.value });
+  if (conceptsWrap) {
+    const onToggle = (chipEl) => {
+      const c = chipEl.dataset.concept;
+      const cur = (getOutcomeMeta(state.selectedCourse, state.selectedOutcome).concepts || []).slice();
+      const i = cur.indexOf(c);
+      if (i >= 0) cur.splice(i, 1); else cur.push(c);
+      // Optimistic UI: toggle the chip's class + count badge without waiting for re-render.
+      chipEl.classList.toggle('selected');
+      chipEl.setAttribute('aria-pressed', chipEl.classList.contains('selected'));
+      const countEl = conceptsWrap.parentElement.querySelector('.chip-count-badge');
+      if (countEl) {
+        const n = cur.length;
+        countEl.textContent = `${n} selected`;
+        countEl.style.background = n === 0 ? '#fee2e2' : '#fef3c7';
+        countEl.style.color = n === 0 ? '#b91c1c' : 'var(--brand-primary)';
+      }
+      const warn = conceptsWrap.parentElement.querySelector('.concept-warn');
+      if (cur.length === 0 && !warn) {
+        const w = document.createElement('div'); w.className = 'concept-warn'; w.textContent = 'Pick at least one concept.';
+        conceptsWrap.parentElement.appendChild(w);
+      } else if (cur.length > 0 && warn) {
+        warn.remove();
+      }
+      setOutcomeMeta(state.selectedCourse, state.selectedOutcome, { concepts: cur });
+    };
+    conceptsWrap.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => onToggle(chip));
+      chip.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onToggle(chip); }
+      });
     });
   }
   const saveOnBlur = (el, field) => {
@@ -988,7 +1090,8 @@ function renderDomainDetailed(domain, subs, showFilter, summary) {
         : courseHits.map(m => {
             const meta = getOutcomeMeta(m.Course, m.OutcomeText);
             const annot = [];
-            if (meta.concept)    annot.push(`<span style="color:var(--brand-muted)">Concept:</span> ${escapeHtml(meta.concept)}`);
+            const cs = meta.concepts || [];
+            if (cs.length) annot.push(`<span style="color:var(--brand-muted)">Concept${cs.length===1?'':'s'}:</span> ${escapeHtml(cs.join(', '))}`);
             if (meta.topics)     annot.push(`<span style="color:var(--brand-muted)">Topics:</span> ${escapeHtml(meta.topics)}`);
             if (meta.evaluation) annot.push(`<span style="color:var(--brand-muted)">Evaluation:</span> ${escapeHtml(meta.evaluation)}`);
             const annotHtml = annot.length ? `<div class="outcome" style="font-size:11px;margin-top:2px">${annot.join(' · ')}</div>` : '';
@@ -1070,13 +1173,14 @@ function renderDomainMatrix(domain, subs, showFilter, summary) {
 
     const rowsForCourse = courseOutcomes.map(o => {
       const meta = getOutcomeMeta(c.CourseName, o.OutcomeText);
+      const conceptsStr = (meta.concepts || []).join(', ');
       const xs = visibleSubs.map(s => {
         const mapped = state.mappings.some(m => m.Course === c.CourseName && m.OutcomeText === o.OutcomeText && m.SubCompetencyCode === s.Code);
         return `<td class="x-cell${s.IsParent ? ' parent-col' : ''}${mapped ? ' x' : ''}">${mapped ? 'X' : ''}</td>`;
       }).join('');
       return `<tr>
         <td class="outcome">${escapeHtml(o.OutcomeText)}</td>
-        <td class="concepts">${escapeHtml(meta.concept || '')}</td>
+        <td class="concepts">${escapeHtml(conceptsStr)}</td>
         <td class="topics">${escapeHtml(meta.topics || '')}</td>
         ${xs}
         <td class="eval">${escapeHtml(meta.evaluation || '')}</td>
@@ -1194,9 +1298,10 @@ function buildDomainSheet(workbook, domain, showFilter) {
 
     courseOutcomes.forEach(o => {
       const meta = getOutcomeMeta(c.CourseName, o.OutcomeText);
+      const conceptsStr = (meta.concepts || []).join(', ');
       const xs = visibleSubs.map(s => state.mappings.some(m =>
         m.Course === c.CourseName && m.OutcomeText === o.OutcomeText && m.SubCompetencyCode === s.Code) ? 'X' : '');
-      ws.getRow(rowNum).values = [o.OutcomeText, meta.concept || '', meta.topics || '', ...xs, meta.evaluation || ''];
+      ws.getRow(rowNum).values = [o.OutcomeText, conceptsStr, meta.topics || '', ...xs, meta.evaluation || ''];
       ws.getRow(rowNum).eachCell({ includeEmpty: true }, cell => {
         cell.alignment = { wrapText: true, vertical: 'top', horizontal: cell.col >= 4 && cell.col < 4 + visibleSubs.length ? 'center' : 'left' };
         cell.font = { size: 10 };
@@ -1320,13 +1425,19 @@ document.getElementById('btn-import').addEventListener('change', async function(
     }
 
     if (incomingMeta.length) {
-      const metaRows = incomingMeta.map(m => ({
-        course: m.course || m.Course,
-        outcome_text: m.outcome_text || m.OutcomeText,
-        concept: m.concept || null,
-        topics: m.topics || null,
-        evaluation: m.evaluation || null
-      }));
+      const metaRows = incomingMeta.map(m => {
+        // Accept either new `concepts` array or legacy single `concept` string.
+        let concepts = [];
+        if (Array.isArray(m.concepts)) concepts = m.concepts.filter(Boolean);
+        else if (m.concept) concepts = [m.concept];
+        return {
+          course: m.course || m.Course,
+          outcome_text: m.outcome_text || m.OutcomeText,
+          concepts: concepts.length ? concepts : null,
+          topics: m.topics || null,
+          evaluation: m.evaluation || null
+        };
+      });
       for (let i = 0; i < metaRows.length; i += 500) {
         const { error } = await _supabase.from('outcome_meta').insert(metaRows.slice(i, i + 500));
         if (error) throw error;
@@ -1372,7 +1483,7 @@ document.getElementById('btn-seed').addEventListener('click', async () => {
     const metaRows = (DATA.topicsSeed || []).map(t => ({
       course: t.Course,
       outcome_text: t.OutcomeText,
-      concept: null,
+      concepts: null,
       topics: t.Topics || null,
       evaluation: null
     }));
