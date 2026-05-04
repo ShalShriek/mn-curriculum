@@ -386,9 +386,8 @@
     <!-- EDITOR -->
     <section id="screen-editor" class="screen hidden">
       <div class="flex items-center gap-3 mb-4 flex-wrap">
-        <button id="back-home" class="text-sm brand-text-primary font-semibold btn-link hover:underline">&larr; Back to Course Dashboard</button>
-        <label class="text-xs ml-auto flex items-center gap-2">
-          <span class="uppercase tracking-wider font-semibold brand-text-muted">Switch course</span>
+        <label class="text-xs flex items-center gap-2">
+          <span class="uppercase tracking-wider font-semibold brand-text-muted">Pick a Course</span>
           <select id="editor-course-picker" class="text-sm border brand-border-cream rounded px-2 py-1 bg-white min-w-[260px]">
             <option value="">— Pick a course —</option>
           </select>
@@ -982,7 +981,8 @@ function renderHome() {
   $('#program-total').textContent = `${programTotal} credits · ${DATA.courses.length} courses`;
 }
 
-$('#back-home').addEventListener('click', () => switchTab('home'));
+// (back-home link removed in favor of the Course Editor's "Pick a Course" dropdown — the
+// Course Dashboard tab in the main nav covers anyone who wants to return to the overview.)
 
 // V2: Course-picker dropdown in the Course Editor header
 function populateEditorCoursePicker() {
@@ -1023,10 +1023,9 @@ function renderEditor() {
   if (!state.selectedCourse) {
     $('#editor-meta').textContent = '';
     $('#editor-course-name').innerHTML = 'Pick a course to start editing';
-    $('#outcomes-list').innerHTML = '<div class="p-6 text-sm brand-text-muted">No course selected. Pick one from the <strong>Switch course</strong> dropdown above, or open the <button class="brand-text-primary font-semibold hover:underline" id="ed-empty-go">Course Dashboard</button>.</div>';
+    $('#outcomes-list').innerHTML = '<div class="p-6 text-sm brand-text-muted">Pick a course from the <strong>Pick a Course</strong> dropdown above.</div>';
     $('#subs-list').innerHTML = '<div class="text-center brand-text-muted mt-20">Choose a course first.</div>';
     $('#checked-count').textContent = '0 checked';
-    setTimeout(() => { const b = document.getElementById('ed-empty-go'); if (b) b.addEventListener('click', () => switchTab('home')); }, 0);
     return;
   }
   const c = DATA.courses.find(x => x.CourseName === state.selectedCourse);
@@ -1824,7 +1823,7 @@ function renderHeatmapView() {
   if (state.heatmapDomain !== 'all') {
     leafs = leafs.filter(s => s.Domain === +state.heatmapDomain);
   }
-  leafs = leafs.slice().sort((a,b) => a.Code.localeCompare(b.Code));
+  leafs = leafs.slice().sort((a,b) => compareCodes(a.Code, b.Code));
   const rows = leafs.map(s => {
     const counts = subCompCountsBySemester(s.Code);
     return { s, counts, cls: classifyProgression(counts) };
@@ -2321,7 +2320,7 @@ function buildProgressionWorkbook(wb) {
 function buildHeatmapWorkbook(wb) {
   let leafs = DATA.subCompetencies.filter(s => !s.IsParent);
   if (state.heatmapDomain !== 'all') leafs = leafs.filter(s => s.Domain === +state.heatmapDomain);
-  leafs = leafs.slice().sort((a,b) => a.Code.localeCompare(b.Code));
+  leafs = leafs.slice().sort((a,b) => compareCodes(a.Code, b.Code));
   const rows = leafs.map(s => ({ s, counts: subCompCountsBySemester(s.Code), cls: classifyProgression(subCompCountsBySemester(s.Code)) }));
   // Sheet 1: Heatmap
   const sheetName = state.heatmapDomain === 'all' ? 'Heatmap' : `Heatmap D${state.heatmapDomain}`;
