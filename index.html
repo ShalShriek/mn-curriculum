@@ -6,6 +6,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.iife.js"></script>
 <style>
   :root {
     --brand-primary: #92003B;
@@ -322,6 +323,7 @@
     --gp-warn:#835B00; --gp-warn-bg:#FFF4CE;
     --gp-danger:#B10E1C; --gp-danger-bg:#FDE7E9;
     --gp-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+    font-size: 15px;
   }
   /* Page header card */
   #screen-gaps .gp-page-header { background:var(--gp-bg-1); border:1px solid var(--gp-stroke); border-radius:8px; box-shadow:var(--gp-shadow); overflow:hidden; margin-bottom:16px; }
@@ -467,6 +469,51 @@
   #screen-editor .fl-checkbox-row .fl-cb-code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; font-weight: 600; color: var(--brand-primary); }
   #screen-editor .fl-checkbox-row .fl-cb-text { font-size: 14px; color: var(--fl-fg-1); line-height: 1.4; margin-top: 2px; }
   #screen-editor .fl-empty { text-align: center; color: var(--fl-fg-3); padding: 64px 16px; font-size: 14px; }
+
+  /* ── Reports screen — Fluent skin ────────────────────────────────────────── */
+  #screen-reports .hidden { display: none !important; }
+  #screen-reports { font-size:15px; --rp-stroke:#e0e0e0; --rp-stroke-2:#d1d1d1; --rp-fg-3:#616161; --rp-fg-2:#424242; --rp-fg-1:#242424; --rp-bg-3:#f5f5f5; --rp-shadow:0 0 2px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.14); --rp-r:8px; }
+  #screen-reports .rp-page-header { background:#fff; border:1px solid var(--rp-stroke); border-radius:var(--rp-r); box-shadow:var(--rp-shadow); overflow:hidden; margin-bottom:16px; }
+  #screen-reports .rp-ph-strip { height:3px; background:var(--brand-primary); }
+  #screen-reports .rp-ph-body { padding:16px 20px; }
+  #screen-reports .rp-eyebrow { font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--rp-fg-3); margin-bottom:4px; }
+  #screen-reports .rp-title { font-size:22px; font-weight:600; color:var(--rp-fg-1); margin:0 0 4px; letter-spacing:-.005em; }
+  #screen-reports .rp-subtitle { font-size:14px; color:var(--rp-fg-3); margin:0; }
+  #screen-reports .rp-controls-card { background:#fff; border:1px solid var(--rp-stroke); border-radius:var(--rp-r); box-shadow:var(--rp-shadow); overflow:hidden; margin-bottom:16px; }
+  #screen-reports .rp-scope-row { padding:14px 20px 0; display:flex; align-items:center; gap:12px; }
+  #screen-reports .rp-scope-label { font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--rp-fg-3); flex-shrink:0; }
+  #screen-reports .scope-toggle { display:inline-flex; background:var(--rp-bg-3); border:1px solid var(--rp-stroke); border-radius:9999px; padding:3px; gap:2px; height:auto; min-height:0; }
+  #screen-reports .scope-toggle .opt { padding:5px 16px; font-size:13px; font-weight:600; color:var(--rp-fg-3); cursor:pointer; border-radius:9999px; border:none; background:transparent; display:inline-block; height:auto; width:auto; min-width:auto; white-space:nowrap; transition:background .12s,color .12s; }
+  #screen-reports .scope-toggle .opt.active { background:var(--brand-primary); color:#fff; }
+  #screen-reports .scope-toggle .opt:not(.active):hover { color:var(--rp-fg-1); background:transparent; }
+  #screen-reports .rp-panel { border-top:1px solid var(--rp-stroke); margin-top:12px; padding:14px 20px; display:flex; flex-wrap:wrap; align-items:flex-end; gap:16px; }
+  #screen-reports .rp-panel-vert { flex-direction:column; align-items:stretch; gap:0; padding:0; }
+  #screen-reports .rp-field { display:flex; flex-direction:column; gap:4px; }
+  #screen-reports .rp-field label { font-size:11px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:var(--rp-fg-3); }
+  #screen-reports .rp-select { height:32px; padding:0 28px 0 10px; min-width:200px; background:#fff; border:1px solid var(--rp-stroke); border-radius:6px; font:inherit; font-size:13px; color:var(--rp-fg-1); cursor:pointer; appearance:none; -webkit-appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23616161' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 8px center; }
+  #screen-reports .rp-select.sm { min-width:130px; }
+  #screen-reports .rp-select:focus { outline:none; border-color:var(--brand-primary); }
+  #screen-reports .rp-actions { margin-left:auto; display:flex; flex-direction:column; align-items:center; gap:6px; }
+  #screen-reports .rp-actions-row { display:flex; gap:8px; align-items:center; }
+  #screen-reports .rp-btn { display:inline-flex; align-items:center; gap:6px; height:32px; padding:0 14px; border-radius:6px; font:inherit; font-size:13px; font-weight:600; cursor:pointer; border:1px solid transparent; transition:background .12s; white-space:nowrap; }
+  #screen-reports .rp-btn.sm { height:28px; padding:0 10px; font-size:12px; }
+  #screen-reports .rp-btn-primary { background:var(--brand-primary); color:#fff; border-color:var(--brand-primary); }
+  #screen-reports .rp-btn-primary:hover { background:var(--brand-primary-dark); }
+  #screen-reports .rp-btn-accent { background:var(--brand-accent); color:#1a1a1a; border-color:var(--brand-accent-dark); }
+  #screen-reports .rp-btn-accent:hover { background:var(--brand-accent-dark); }
+  #screen-reports .rp-btn-outline { background:#fff; color:var(--brand-primary); border-color:var(--brand-primary); }
+  #screen-reports .rp-btn-outline:hover { background:#fbeef2; }
+  #screen-reports .rp-lev-picker { display:flex; flex-wrap:wrap; gap:8px; padding:14px 20px; }
+  #screen-reports .lev-btn { display:flex; flex-direction:column; padding:10px 16px; background:#fff; border:1px solid var(--rp-stroke); border-left:3px solid var(--rp-stroke-2); border-radius:6px; font:inherit; font-size:13px; font-weight:600; color:var(--rp-fg-2); cursor:pointer; text-align:left; transition:box-shadow .12s,transform .06s; height:auto; min-width:0; }
+  #screen-reports .lev-btn:hover { box-shadow:0 2px 4px rgba(0,0,0,.14); transform:translateY(-1px); }
+  #screen-reports .lev-btn.selected { background:var(--brand-primary); color:#fff; border-color:var(--brand-primary); border-left-color:var(--brand-accent); }
+  #screen-reports .lev-btn .lev-sub { font-size:11px; font-weight:400; margin-top:2px; color:var(--rp-fg-3); display:block; }
+  #screen-reports .lev-btn.selected .lev-sub { color:rgba(255,255,255,.7); }
+  #screen-reports .rp-sub-filter { padding:10px 20px; }
+  #screen-reports .rp-sub-label { font-size:11px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:var(--rp-fg-3); margin-bottom:8px; }
+  #screen-reports .rp-lev-actions { padding:12px 20px 14px; display:flex; justify-content:flex-end; gap:8px; border-top:1px solid var(--rp-stroke); }
+  #screen-reports .rp-canvas-card { background:#fff; border:1px solid var(--rp-stroke); border-radius:var(--rp-r); box-shadow:var(--rp-shadow); overflow:hidden; }
+  #screen-reports .rp-canvas-body { padding:24px 20px; overflow-x:auto; }
 </style>
 </head>
 <body>
@@ -569,7 +616,7 @@
         </aside>
         <section class="fl-pane">
           <div class="fl-toolbar">
-            <select id="domain-filter" class="fl-dropdown">
+            <select id="domain-filter" class="fl-dropdown" style="display:none">
               <option value="all">All Domains</option>
             </select>
             <span class="fl-checked-counter" id="checked-count">0 checked</span>
@@ -611,124 +658,129 @@
 
     <!-- REPORTS -->
     <section id="screen-reports" class="screen hidden">
-      <h2 class="text-2xl font-semibold brand-text-primary mb-1">Reports</h2>
-      <p class="text-sm brand-text-muted mb-4">Pick a scope, then choose your output: print, save as PDF, or download as Excel.</p>
 
-      <!-- Scope toggle -->
-      <div class="flex items-center gap-3 mb-5">
-        <span class="text-[11px] font-semibold uppercase brand-text-muted tracking-wider">Scope</span>
-        <div class="scope-toggle" id="report-scope">
-          <span class="opt active" data-scope="domain">By Domain</span>
-          <span class="opt" data-scope="course">By Course</span>
-          <span class="opt" data-scope="leveling">Leveling</span>
+      <!-- Page header -->
+      <div class="rp-page-header">
+        <div class="rp-ph-strip"></div>
+        <div class="rp-ph-body">
+          <div class="rp-eyebrow">MN Program · AACN Sub-Competencies</div>
+          <h2 class="rp-title">Reports</h2>
+          <p class="rp-subtitle">Generate domain, course, and leveling reports for CCNE/AACN accreditation review.</p>
         </div>
       </div>
 
-      <!-- ===== Scope: By Domain (existing controls — UNCHANGED behavior) ===== -->
-      <div id="scope-domain-controls" class="report-controls mb-6">
-        <div class="flex flex-wrap items-end gap-3">
-          <label class="text-xs">
-            <span class="block uppercase tracking-wider font-semibold brand-text-muted mb-1">Domain</span>
-            <select id="report-domain" class="text-sm border brand-border-cream rounded px-2 py-1 bg-white"></select>
-          </label>
-          <label class="text-xs">
-            <span class="block uppercase tracking-wider font-semibold brand-text-muted mb-1">Format</span>
-            <select id="report-format" class="text-sm border brand-border-cream rounded px-2 py-1 bg-white">
+      <!-- Controls card -->
+      <div class="rp-controls-card">
+        <div class="rp-scope-row">
+          <span class="rp-scope-label">Scope</span>
+          <div class="scope-toggle" id="report-scope">
+            <span class="opt active" data-scope="domain">By Domain</span>
+            <span class="opt" data-scope="course">By Course</span>
+            <span class="opt" data-scope="leveling">Leveling</span>
+          </div>
+        </div>
+
+        <!-- By Domain panel -->
+        <div id="scope-domain-controls" class="report-controls rp-panel">
+          <div class="rp-field">
+            <label for="report-domain">Domain</label>
+            <select id="report-domain" class="rp-select"></select>
+          </div>
+          <div class="rp-field">
+            <label for="report-format">Format</label>
+            <select id="report-format" class="rp-select sm">
               <option value="matrix" selected>Matrix (grid)</option>
               <option value="detailed">Detailed (narrative)</option>
             </select>
-          </label>
-          <label class="text-xs">
-            <span class="block uppercase tracking-wider font-semibold brand-text-muted mb-1">Show</span>
-            <select id="report-show" class="text-sm border brand-border-cream rounded px-2 py-1 bg-white">
+          </div>
+          <div class="rp-field">
+            <label for="report-show">Show</label>
+            <select id="report-show" class="rp-select sm">
               <option value="all">All sub-competencies</option>
               <option value="covered">Only covered</option>
               <option value="gaps">Only zero-coverage</option>
             </select>
-          </label>
-          <div class="ml-auto flex flex-wrap gap-2">
-            <button id="btn-print" class="px-4 py-2 text-sm font-semibold text-white rounded" style="background:var(--brand-primary)">🖨 Print / Save as PDF</button>
-            <button id="btn-xlsx-one" class="px-4 py-2 text-sm font-semibold rounded" style="background:var(--brand-accent-dark); color:#1a1a1a">📊 Export this domain</button>
-            <button id="btn-xlsx-all" class="px-4 py-2 text-sm font-semibold rounded" style="background:white; border:2px solid var(--brand-primary); color:var(--brand-primary)">📊 Export all domains</button>
+          </div>
+          <div class="rp-actions">
+            <div class="rp-actions-row">
+              <button id="btn-xlsx-one" class="rp-btn rp-btn-accent">📊 Export this domain</button>
+              <button id="btn-xlsx-all" class="rp-btn rp-btn-outline">📊 Export all domains</button>
+              <button id="btn-print" class="rp-btn rp-btn-primary">🖨 Print / Save PDF</button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- ===== Scope: By Course (single course across all domains) ===== -->
-      <div id="scope-course-controls" class="report-controls mb-6 hidden">
-        <div class="flex flex-wrap items-end gap-3">
-          <label class="text-xs">
-            <span class="block uppercase tracking-wider font-semibold brand-text-muted mb-1">Course</span>
-            <select id="bc-course" class="text-sm border brand-border-cream rounded px-2 py-1 bg-white"></select>
-          </label>
-          <label class="text-xs">
-            <span class="block uppercase tracking-wider font-semibold brand-text-muted mb-1">Format</span>
-            <select id="bc-format" class="text-sm border brand-border-cream rounded px-2 py-1 bg-white">
+        <!-- By Course panel -->
+        <div id="scope-course-controls" class="report-controls rp-panel hidden">
+          <div class="rp-field">
+            <label for="bc-course">Course</label>
+            <select id="bc-course" class="rp-select" style="min-width:320px"></select>
+          </div>
+          <div class="rp-field">
+            <label for="bc-format">Format</label>
+            <select id="bc-format" class="rp-select sm">
               <option value="matrix" selected>Matrix (grid)</option>
               <option value="detailed">Detailed (narrative)</option>
             </select>
-          </label>
-          <label class="text-xs">
-            <span class="block uppercase tracking-wider font-semibold brand-text-muted mb-1">Show</span>
-            <select id="bc-show" class="text-sm border brand-border-cream rounded px-2 py-1 bg-white">
+          </div>
+          <div class="rp-field">
+            <label for="bc-show">Show</label>
+            <select id="bc-show" class="rp-select sm">
               <option value="all">All sub-competencies</option>
               <option value="covered">Only covered</option>
               <option value="gaps">Only zero-coverage</option>
             </select>
-          </label>
-          <div class="ml-auto flex flex-wrap gap-2">
-            <button id="bc-btn-print" class="px-4 py-2 text-sm font-semibold text-white rounded" style="background:var(--brand-primary)">🖨 Print / Save as PDF</button>
-            <button id="bc-btn-xlsx" class="px-4 py-2 text-sm font-semibold rounded" style="background:var(--brand-accent-dark); color:#1a1a1a">📊 Download Excel</button>
+          </div>
+          <div class="rp-actions">
+            <div class="rp-actions-row">
+              <button id="bc-btn-xlsx" class="rp-btn rp-btn-accent">📊 Download Excel</button>
+              <button id="bc-btn-print" class="rp-btn rp-btn-primary">🖨 Print / Save PDF</button>
+            </div>
+            <div class="rp-actions-row">
+              <button id="bc-btn-word-one" class="rp-btn rp-btn-outline sm">📄 Word: CO + Eval — This Course</button>
+              <button id="bc-btn-word-all" class="rp-btn rp-btn-outline sm">📄 Word: CO + Eval — All Courses</button>
+            </div>
+            <div class="rp-actions-row">
+              <button id="bc-btn-wordsubs-one" class="rp-btn rp-btn-outline sm">📄 Word: CO + Eval + Sub-comps — This Course</button>
+              <button id="bc-btn-wordsubs-all" class="rp-btn rp-btn-outline sm">📄 Word: CO + Eval + Sub-comps — All Courses</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Leveling panel -->
+        <div id="scope-leveling-controls" class="report-controls rp-panel rp-panel-vert hidden">
+          <div class="rp-lev-picker" id="lev-btns">
+            <button class="lev-btn selected" data-lev="progression">Progression<span class="lev-sub">Sub-comp ↗ across semesters</span></button>
+            <button class="lev-btn" data-lev="heatmap">🔥 Heatmap<span class="lev-sub">Sub-comps × semesters</span></button>
+            <button class="lev-btn" data-lev="comparisons">Course Comparisons<span class="lev-sub">Compare 2–4 courses side by side</span></button>
+            <button class="lev-btn" data-lev="breadth">Domain Breadth<span class="lev-sub">Coverage % per domain per semester</span></button>
+          </div>
+          <div id="lev-heatmap-filter" class="rp-sub-filter hidden">
+            <div class="rp-field">
+              <label>Filter by domain</label>
+              <select id="lev-heatmap-domain" class="rp-select sm"></select>
+            </div>
+          </div>
+          <div id="lev-comparisons-picker" class="rp-sub-filter hidden">
+            <div class="rp-sub-label">Selected courses (2–4)</div>
+            <div class="flex flex-wrap items-center gap-2 mb-2" id="lev-comparison-chips"></div>
+            <div class="rp-field">
+              <label>Add a course</label>
+              <select id="lev-comparison-add" class="rp-select sm"></select>
+            </div>
+          </div>
+          <div class="rp-lev-actions">
+            <button id="lev-btn-xlsx" class="rp-btn rp-btn-accent">📊 Download Excel</button>
+            <button id="lev-btn-print" class="rp-btn rp-btn-primary">🖨 Print / Save PDF</button>
           </div>
         </div>
       </div>
 
-      <!-- ===== Scope: Leveling (4 reports) ===== -->
-      <div id="scope-leveling-controls" class="report-controls mb-6 hidden">
-        <div class="text-[11px] font-semibold uppercase brand-text-muted tracking-wider mb-2">Pick a leveling view</div>
-        <div class="lev-btns mb-4" id="lev-btns">
-          <button class="lev-btn selected" data-lev="progression">
-            <span>Progression<span class="lev-sub">Sub-comp ↗ across semesters</span></span>
-          </button>
-          <button class="lev-btn" data-lev="heatmap">
-            <span>🔥 Heatmap<span class="lev-sub">Sub-comps × semesters</span></span>
-          </button>
-          <button class="lev-btn" data-lev="comparisons">
-            <span>Course Comparisons<span class="lev-sub">Compare 2–4 courses side by side</span></span>
-          </button>
-          <button class="lev-btn" data-lev="breadth">
-            <span>Domain Breadth<span class="lev-sub">Coverage % per domain per semester</span></span>
-          </button>
-        </div>
-
-        <!-- Heatmap domain filter (only shown when heatmap is selected) -->
-        <div id="lev-heatmap-filter" class="hidden mb-4">
-          <label class="text-xs">
-            <span class="block uppercase tracking-wider font-semibold brand-text-muted mb-1">Filter by domain</span>
-            <select id="lev-heatmap-domain" class="text-sm border brand-border-cream rounded px-2 py-1 bg-white"></select>
-          </label>
-        </div>
-
-        <!-- Course Comparisons multi-picker (only shown when comparisons is selected) -->
-        <div id="lev-comparisons-picker" class="hidden mb-4">
-          <div class="text-[11px] font-semibold uppercase brand-text-muted tracking-wider mb-2">Selected courses (2–4)</div>
-          <div class="flex flex-wrap items-center gap-2 mb-2" id="lev-comparison-chips"></div>
-          <div class="flex items-end gap-2">
-            <label class="text-xs">
-              <span class="block uppercase tracking-wider font-semibold brand-text-muted mb-1">Add a course</span>
-              <select id="lev-comparison-add" class="text-sm border brand-border-cream rounded px-2 py-1 bg-white"></select>
-            </label>
-          </div>
-        </div>
-
-        <div class="flex justify-end gap-2 mt-2">
-          <button id="lev-btn-print" class="px-4 py-2 text-sm font-semibold text-white rounded" style="background:var(--brand-primary)">🖨 Print / Save as PDF</button>
-          <button id="lev-btn-xlsx" class="px-4 py-2 text-sm font-semibold rounded" style="background:var(--brand-accent-dark); color:#1a1a1a">📊 Download Excel</button>
-        </div>
+      <!-- Canvas card -->
+      <div class="rp-canvas-card">
+        <div id="report-canvas" class="rp-canvas-body"></div>
       </div>
 
-      <!-- Single shared canvas for all scopes -->
-      <div id="report-canvas" class="bg-white rounded-lg shadow border brand-border-cream p-8"></div>
     </section>
 
     <!-- DATA -->
@@ -1573,7 +1625,7 @@ function renderGaps() {
       </div>
     </div>
 
-    <details class="gp-acc" open>
+    <details class="gp-acc">
       <summary class="gp-sum">
         ${chevron}
         <span class="gp-acc-title">
@@ -1585,7 +1637,7 @@ function renderGaps() {
       <div class="gp-list">${renderZeroRows(zero)}</div>
     </details>
 
-    <details class="gp-acc" open>
+    <details class="gp-acc">
       <summary class="gp-sum">
         ${chevron}
         <span class="gp-acc-title">
@@ -2129,10 +2181,6 @@ function renderProgressionView() {
   }).join('');
 
   $('#report-canvas').innerHTML = `
-    <div class="report-meta">
-      <div class="title">Sub-Competency Progression</div>
-      <div>${rows.length} sub-competencies analyzed · Generated ${new Date().toLocaleDateString()}</div>
-    </div>
     ${commentary}
     ${sections}`;
 }
@@ -2517,7 +2565,7 @@ function buildByCourseSheet(wb, courseName, showFilter) {
   const c = DATA.courses.find(x => x.CourseName === courseName);
   const courseMappings = state.mappings.filter(m => m.Course === courseName);
   const distinctSubs = new Set(courseMappings.map(m => m.SubCompetencyCode));
-  const ws = wb.addWorksheet(`${courseName.slice(0, 28)}`, {
+  const ws = wb.addWorksheet(courseName.replace(/[:\\/?*[\]]/g, '-').trim().slice(0, 31), {
     views: [{ state: 'frozen', xSplit: 1, ySplit: 4 }],
     pageSetup: { orientation: 'landscape', fitToPage: true, fitToWidth: 1, fitToHeight: 0 },
     headerFooter: { oddHeader: '&LCurriculum Mapping&R&A', oddFooter: '&CPage &P of &N' }
@@ -2845,6 +2893,156 @@ document.getElementById('lev-btn-xlsx')?.addEventListener('click', async () => {
   }
   if (wb.worksheets.length === 0) return; // empty (e.g. comparisons with <2 courses)
   await downloadWorkbook(wb, filename);
+});
+
+// ===================================================================
+// REPORTS — Word document exports
+// ===================================================================
+
+function getSubsByOutcome(courseName, outcomeText) {
+  const parentMap = new Map();
+  state.mappings
+    .filter(m => m.Course === courseName && m.OutcomeText === outcomeText)
+    .forEach(m => {
+      const sub = DATA.subCompetencies.find(s => s.Code === m.SubCompetencyCode && !s.IsParent);
+      if (!sub) return;
+      const parent = DATA.subCompetencies.find(s => s.Code === sub.ParentCode && s.IsParent);
+      if (!parent) return;
+      if (!parentMap.has(parent.Code)) parentMap.set(parent.Code, { parentCode: parent.Code, parentText: parent.Text, leaves: [] });
+      parentMap.get(parent.Code).leaves.push({ code: m.SubCompetencyCode, text: sub.Text });
+    });
+  return [...parentMap.values()];
+}
+
+async function downloadWordCourseReport(courseName, includeSubComps) {
+  if (typeof docx === 'undefined') { alert('Word library not loaded. Please check your connection and try again.'); return; }
+  const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType } = docx;
+  const border = { style: 'single', size: 4, color: 'aaaaaa' };
+  const allBorders = { top: border, bottom: border, left: border, right: border };
+  const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+  const courses = courseName
+    ? [DATA.courses.find(c => c.CourseName === courseName)].filter(Boolean)
+    : [...DATA.courses].sort((a, b) => (a.Semester || 99) - (b.Semester || 99) || a.CourseName.localeCompare(b.CourseName));
+
+  // Margins in DXA (1440 = 1 inch). SubComps uses tighter 0.75in margins for wider table.
+  const pageMargin = includeSubComps
+    ? { top: 1152, bottom: 1080, left: 1080, right: 1080 }
+    : { top: 1440, bottom: 1296, left: 1440, right: 1440 };
+  const contentWidth = includeSubComps ? 10080 : 9360;
+
+  // Column widths in DXA
+  const colWidths = includeSubComps
+    ? [260, 2016, 1584, 10080 - 260 - 2016 - 1584]  // #, CO 1.4in, Eval 1.1in, Subs ~4.32in
+    : [360, 9360 - 360 - 3000, 3000];                // #, CO, Eval ~2.1in
+
+  const allChildren = [];
+
+  courses.forEach((course, idx) => {
+    const outcomes = DATA.courseOutcomes.filter(o => o.Course === course.CourseName);
+
+    // Course name — page break before each course after the first
+    allChildren.push(new Paragraph({
+      pageBreakBefore: idx > 0,
+      children: [new TextRun({ text: course.CourseName, bold: true, size: 34 })],
+      spacing: { after: 100 }
+    }));
+
+    // Credits line
+    allChildren.push(new Paragraph({
+      children: [new TextRun({ text: `${course.Credits ?? 3} credit${course.Credits === 1 ? '' : 's'}`, size: 20, color: '333333' })],
+      spacing: { after: 240 }
+    }));
+
+    // Header row
+    const headerCells = [
+      new TableCell({ width: { size: colWidths[0], type: WidthType.DXA }, borders: allBorders,
+        children: [new Paragraph({ alignment: 'center', children: [new TextRun({ text: '#', bold: true, size: 18 })] })] }),
+      new TableCell({ width: { size: colWidths[1], type: WidthType.DXA }, borders: allBorders,
+        children: [new Paragraph({ children: [new TextRun({ text: 'Course Outcome', bold: true, size: 18 })] })] }),
+      new TableCell({ width: { size: colWidths[2], type: WidthType.DXA }, borders: allBorders,
+        children: [new Paragraph({ children: [new TextRun({ text: 'Evaluation', bold: true, size: 18 })] })] })
+    ];
+    if (includeSubComps) headerCells.push(
+      new TableCell({ width: { size: colWidths[3], type: WidthType.DXA }, borders: allBorders,
+        children: [new Paragraph({ children: [new TextRun({ text: 'Competency / Sub-competencies', bold: true, size: 18 })] })] })
+    );
+
+    // Data rows
+    const dataRows = outcomes.map((o, i) => {
+      const evalText = getOutcomeMeta(course.CourseName, o.OutcomeText).evaluation || '';
+      const cells = [
+        new TableCell({ width: { size: colWidths[0], type: WidthType.DXA }, borders: allBorders,
+          children: [new Paragraph({ alignment: 'center', children: [new TextRun({ text: String(i + 1), bold: true, size: 19 })] })] }),
+        new TableCell({ width: { size: colWidths[1], type: WidthType.DXA }, borders: allBorders,
+          children: [new Paragraph({ children: [new TextRun({ text: o.OutcomeText, size: 19 })] })] }),
+        new TableCell({ width: { size: colWidths[2], type: WidthType.DXA }, borders: allBorders,
+          children: [new Paragraph({ children: [new TextRun({ text: evalText || 'Not yet entered', size: 19, italics: !evalText, color: evalText ? '000000' : 'aaaaaa' })] })] })
+      ];
+      if (includeSubComps) {
+        const groups = getSubsByOutcome(course.CourseName, o.OutcomeText);
+        const subParas = [];
+        groups.forEach(g => {
+          subParas.push(new Paragraph({
+            children: [new TextRun({ text: g.parentCode + '  ', bold: true, font: 'Courier New', size: 14 }),
+                       new TextRun({ text: g.parentText, bold: true, size: 14 })],
+            spacing: { after: 40 }
+          }));
+          g.leaves.forEach(l => subParas.push(new Paragraph({
+            indent: { left: 100 },
+            children: [new TextRun({ text: l.code + '  ', bold: true, font: 'Courier New', size: 14 }),
+                       new TextRun({ text: l.text, size: 14, color: '222222' })],
+            spacing: { after: 20 }
+          })));
+        });
+        cells.push(new TableCell({ width: { size: colWidths[3], type: WidthType.DXA }, borders: allBorders,
+          children: subParas.length ? subParas : [new Paragraph({ children: [new TextRun({ text: '', size: 14 })] })] }));
+      }
+      return new TableRow({ children: cells });
+    });
+
+    allChildren.push(new Table({
+      width: { size: contentWidth, type: WidthType.DXA },
+      rows: [new TableRow({ tableHeader: true, children: headerCells }), ...dataRows]
+    }));
+
+    // Footer
+    allChildren.push(new Paragraph({
+      children: [new TextRun({ text: `Curriculum Mapping  ·  Page ${idx + 1} of ${courses.length}  ·  Generated ${today}`, size: 16, color: '999999' })],
+      spacing: { before: 200 }
+    }));
+  });
+
+  const doc = new Document({
+    sections: [{ properties: { page: { size: { width: 12240, height: 15840 }, margin: pageMargin } }, children: allChildren }]
+  });
+
+  const blob = await Packer.toBlob(doc);
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  const slug = courseName ? courseName.replace(/[^A-Za-z0-9]/g, '_').slice(0, 40) : 'All_Courses';
+  a.download = `CO_Report_${includeSubComps ? 'SubComps_' : ''}${slug}_${new Date().toISOString().slice(0, 10)}.docx`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+}
+
+document.getElementById('bc-btn-word-one')?.addEventListener('click', async () => {
+  const courseName = $('#bc-course').value;
+  if (!courseName) return;
+  await downloadWordCourseReport(courseName, false);
+});
+document.getElementById('bc-btn-word-all')?.addEventListener('click', async () => {
+  await downloadWordCourseReport(null, false);
+});
+document.getElementById('bc-btn-wordsubs-one')?.addEventListener('click', async () => {
+  const courseName = $('#bc-course').value;
+  if (!courseName) return;
+  await downloadWordCourseReport(courseName, true);
+});
+document.getElementById('bc-btn-wordsubs-all')?.addEventListener('click', async () => {
+  await downloadWordCourseReport(null, true);
 });
 
 // ---------- Data / Backup-Restore ----------
