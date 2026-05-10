@@ -352,8 +352,8 @@
   #screen-gaps summary.gp-sum:hover { background:var(--gp-bg-3); }
   #screen-gaps .gp-chevron { width:14px; height:14px; color:var(--gp-fg-3); transition:transform 0.15s; flex-shrink:0; }
   #screen-gaps details.gp-acc[open] .gp-chevron { transform:rotate(90deg); }
-  #screen-gaps .gp-acc-title { flex:1; font-size:12px; font-weight:700; color:var(--gp-fg-1); display:flex; align-items:center; gap:8px; }
-  #screen-gaps .gp-acc-subtitle { font-size:12px; font-weight:400; color:var(--gp-fg-3); }
+  #screen-gaps .gp-acc-title { flex:1; font-size:13px; font-weight:700; color:var(--gp-fg-1); display:flex; align-items:center; gap:8px; }
+  #screen-gaps .gp-acc-subtitle { font-size:13px; font-weight:400; color:var(--gp-fg-3); }
   #screen-gaps .gp-acc-icon { width:18px; height:18px; border-radius:50%; display:inline-grid; place-items:center; flex-shrink:0; }
   #screen-gaps .gp-acc-icon svg { width:11px; height:11px; }
   #screen-gaps .gp-acc-icon-zero { background:var(--gp-danger-bg); color:var(--gp-danger); }
@@ -365,16 +365,16 @@
   #screen-gaps .gp-count-healthy { background:var(--gp-success-bg); color:var(--gp-success); }
   /* Domain group header inside accordion */
   #screen-gaps .gp-domain-head { padding:7px 16px 5px; font-size:11px; font-weight:700; color:var(--brand-primary); background:var(--gp-bg-2); border-bottom:1px solid var(--gp-stroke); display:flex; align-items:center; gap:6px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:0.03em; }
-  #screen-gaps .gp-domain-name { font-family:"Source Sans 3",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-weight:600; color:var(--gp-fg-2); font-size:12px; letter-spacing:0; }
+  #screen-gaps .gp-domain-name { font-family:"Source Sans 3",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-weight:600; color:var(--gp-fg-2); font-size:13px; letter-spacing:0; }
   /* Gap rows */
   #screen-gaps .gp-list { padding:0; }
   #screen-gaps .gp-row { display:flex; align-items:flex-start; gap:12px; padding:10px 16px; border-bottom:1px solid var(--gp-stroke); transition:background 0.07s; }
   #screen-gaps .gp-row:last-child { border-bottom:none; }
   #screen-gaps .gp-row:hover { background:var(--gp-bg-2); }
-  #screen-gaps .gp-code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px; font-weight:700; color:var(--brand-primary); white-space:nowrap; flex-shrink:0; width:50px; padding-top:1px; }
+  #screen-gaps .gp-code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; font-weight:700; color:var(--brand-primary); white-space:nowrap; flex-shrink:0; width:50px; padding-top:1px; }
   #screen-gaps .gp-code-btn { background:none; border:none; font:inherit; color:inherit; cursor:pointer; padding:0; text-decoration:underline; text-underline-offset:2px; text-decoration-style:dotted; }
   #screen-gaps .gp-code-btn:hover { color:var(--brand-primary-dark); text-decoration-style:solid; }
-  #screen-gaps .gp-desc { flex:1; font-size:13.5px; color:var(--gp-fg-1); line-height:1.4; }
+  #screen-gaps .gp-desc { flex:1; font-size:15px; color:var(--gp-fg-1); line-height:1.4; }
   #screen-gaps .gp-courses { margin-top:5px; display:flex; flex-wrap:wrap; gap:4px; }
   #screen-gaps .gp-course-tag { display:inline-block; background:var(--gp-bg-3); border:1px solid var(--gp-stroke); border-radius:4px; padding:1px 7px; font-size:11px; color:var(--gp-fg-2); }
   #screen-gaps .gp-meta { flex-shrink:0; display:flex; align-items:flex-start; padding-top:1px; }
@@ -514,6 +514,17 @@
   #screen-reports .rp-lev-actions { padding:12px 20px 14px; display:flex; justify-content:flex-end; gap:8px; border-top:1px solid var(--rp-stroke); }
   #screen-reports .rp-canvas-card { background:#fff; border:1px solid var(--rp-stroke); border-radius:var(--rp-r); box-shadow:var(--rp-shadow); overflow:hidden; }
   #screen-reports .rp-canvas-body { padding:24px 20px; overflow-x:auto; }
+  /* Downloads dropdown */
+  #screen-reports .rp-controls-card { overflow:visible; }
+  #screen-reports .dl-dropdown { position:relative; display:inline-block; }
+  #screen-reports .dl-btn { display:inline-flex; align-items:center; gap:7px; height:32px; padding:0 14px; border-radius:6px; font:inherit; font-size:13px; font-weight:600; cursor:pointer; background:#fff; color:var(--brand-primary); border:1.5px solid var(--brand-primary); transition:background .12s; white-space:nowrap; }
+  #screen-reports .dl-btn:hover { background:var(--brand-primary-pale); }
+  #screen-reports .dl-panel { position:absolute; right:0; top:calc(100% + 6px); min-width:272px; background:#fff; border:1px solid var(--rp-stroke); border-radius:var(--rp-r); box-shadow:0 4px 12px rgba(0,0,0,.16); z-index:300; display:none; padding:6px 0; }
+  #screen-reports .dl-panel.open { display:block; }
+  #screen-reports .dl-section-label { padding:8px 14px 4px; font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--rp-fg-3); border-top:1px solid var(--rp-stroke); margin-top:2px; }
+  #screen-reports .dl-section-label:first-child { border-top:none; margin-top:0; padding-top:4px; }
+  #screen-reports .dl-panel-item { padding:9px 14px; font-size:13px; color:var(--rp-fg-1); cursor:pointer; white-space:nowrap; }
+  #screen-reports .dl-panel-item:hover { background:var(--brand-primary-pale); color:var(--brand-primary); }
 </style>
 </head>
 <body>
@@ -702,10 +713,12 @@
             </select>
           </div>
           <div class="rp-actions">
-            <div class="rp-actions-row">
-              <button id="btn-xlsx-one" class="rp-btn rp-btn-accent">📊 Export this domain</button>
-              <button id="btn-xlsx-all" class="rp-btn rp-btn-outline">📊 Export all domains</button>
-              <button id="btn-print" class="rp-btn rp-btn-primary">🖨 Print / Save PDF</button>
+            <div class="dl-dropdown" id="dl-domain">
+              <button class="dl-btn">⬇ Downloads</button>
+              <div class="dl-panel">
+                <div class="dl-panel-item" data-action="xlsx-one">📊 Excel Map — this domain</div>
+                <div class="dl-panel-item" data-action="xlsx-all">📊 Excel Map — all domains</div>
+              </div>
             </div>
           </div>
         </div>
@@ -714,7 +727,7 @@
         <div id="scope-course-controls" class="report-controls rp-panel hidden">
           <div class="rp-field">
             <label for="bc-course">Course</label>
-            <select id="bc-course" class="rp-select" style="min-width:320px"></select>
+            <select id="bc-course" class="rp-select" style="min-width:320px"><option value="">All Courses</option></select>
           </div>
           <div class="rp-field">
             <label for="bc-format">Format</label>
@@ -732,28 +745,37 @@
             </select>
           </div>
           <div class="rp-actions">
-            <div class="rp-actions-row">
-              <button id="bc-btn-xlsx" class="rp-btn rp-btn-accent">📊 Download Excel</button>
-              <button id="bc-btn-print" class="rp-btn rp-btn-primary">🖨 Print / Save PDF</button>
-            </div>
-            <div class="rp-actions-row">
-              <button id="bc-btn-word-one" class="rp-btn rp-btn-outline sm">📄 Word: CO + Eval — This Course</button>
-              <button id="bc-btn-word-all" class="rp-btn rp-btn-outline sm">📄 Word: CO + Eval — All Courses</button>
-            </div>
-            <div class="rp-actions-row">
-              <button id="bc-btn-wordsubs-one" class="rp-btn rp-btn-outline sm">📄 Word: CO + Eval + Sub-comps — This Course</button>
-              <button id="bc-btn-wordsubs-all" class="rp-btn rp-btn-outline sm">📄 Word: CO + Eval + Sub-comps — All Courses</button>
+            <div class="dl-dropdown" id="dl-course">
+              <button class="dl-btn">⬇ Downloads</button>
+              <div class="dl-panel">
+                <div class="dl-section-label">This Course</div>
+                <div class="dl-panel-item" data-action="bc-xlsx-one">📊 Excel Map</div>
+                <div class="dl-panel-item" data-action="bc-word-eval-one">📄 Word: CO + Eval</div>
+                <div class="dl-panel-item" data-action="bc-word-subs-one">📄 Word: CO + Eval + Sub-comps</div>
+                <div class="dl-panel-item" data-action="bc-word-concepts-one">📄 Word: CO + Concepts + Topics + Eval</div>
+                <div class="dl-section-label">All Courses</div>
+                <div class="dl-panel-item" data-action="bc-xlsx-all">📊 Excel Map</div>
+                <div class="dl-panel-item" data-action="bc-word-eval-all">📄 Word: CO + Eval</div>
+                <div class="dl-panel-item" data-action="bc-word-subs-all">📄 Word: CO + Eval + Sub-comps</div>
+                <div class="dl-panel-item" data-action="bc-word-concepts-all">📄 Word: CO + Concepts + Topics + Eval</div>
+              </div>
             </div>
           </div>
         </div>
 
         <!-- Leveling panel -->
         <div id="scope-leveling-controls" class="report-controls rp-panel rp-panel-vert hidden">
-          <div class="rp-lev-picker" id="lev-btns">
+          <div class="rp-lev-picker" id="lev-btns" style="align-items:center;">
             <button class="lev-btn selected" data-lev="progression">Progression<span class="lev-sub">Sub-comp ↗ across semesters</span></button>
             <button class="lev-btn" data-lev="heatmap">🔥 Heatmap<span class="lev-sub">Sub-comps × semesters</span></button>
             <button class="lev-btn" data-lev="comparisons">Course Comparisons<span class="lev-sub">Compare 2–4 courses side by side</span></button>
             <button class="lev-btn" data-lev="breadth">Domain Breadth<span class="lev-sub">Coverage % per domain per semester</span></button>
+            <div class="dl-dropdown" id="dl-lev" style="margin-left:auto;">
+              <button class="dl-btn">⬇ Downloads</button>
+              <div class="dl-panel">
+                <div class="dl-panel-item" data-action="lev-xlsx">📊 Excel — current view</div>
+              </div>
+            </div>
           </div>
           <div id="lev-heatmap-filter" class="rp-sub-filter hidden">
             <div class="rp-field">
@@ -768,10 +790,6 @@
               <label>Add a course</label>
               <select id="lev-comparison-add" class="rp-select sm"></select>
             </div>
-          </div>
-          <div class="rp-lev-actions">
-            <button id="lev-btn-xlsx" class="rp-btn rp-btn-accent">📊 Download Excel</button>
-            <button id="lev-btn-print" class="rp-btn rp-btn-primary">🖨 Print / Save PDF</button>
           </div>
         </div>
       </div>
@@ -1157,7 +1175,6 @@ function renderHome() {
         <div class="tile-name">${escapeHtml(c.CourseName)}</div>
         <div class="tile-stats">
           <div class="tile-stat-cell"><span class="tile-big">${distinctSubs}</span><span class="tile-lbl">sub-comps</span></div>
-          <div class="tile-stat-cell"><span class="tile-big">${ms.length}</span><span class="tile-lbl">mappings</span></div>
         </div>`;
       card.addEventListener('click', () => { state.selectedCourse = c.CourseName; state.selectedOutcome = null; switchTab('editor'); });
       grid.appendChild(card);
@@ -1681,9 +1698,10 @@ function renderReports() {
   }
   // Populate "By Course" course selector once (sorted by semester then name)
   const bcSel = $('#bc-course');
-  if (bcSel && bcSel.options.length === 0) {
+  if (bcSel && bcSel.options.length <= 1) {
     const sorted = DATA.courses.slice().sort((a, b) => (a.Semester || 99) - (b.Semester || 99) || a.CourseName.localeCompare(b.CourseName));
-    bcSel.innerHTML = sorted.map(c => `<option value="${escapeHtml(c.CourseName)}">${escapeHtml(c.CourseName)} · S${c.Semester}</option>`).join('');
+    bcSel.innerHTML = '<option value="">All Courses</option>' +
+      sorted.map(c => `<option value="${escapeHtml(c.CourseName)}">${escapeHtml(c.CourseName)} · S${c.Semester}</option>`).join('');
   }
   // Populate "Add a course" dropdown for Course Comparisons (excludes already-picked)
   refreshComparisonsAddDropdown();
@@ -1915,7 +1933,6 @@ function renderDomainMatrix(domain, subs, showFilter, summary) {
 ['report-domain', 'report-format', 'report-show'].forEach(id => {
   document.getElementById(id).addEventListener('change', drawReport);
 });
-document.getElementById('btn-print').addEventListener('click', () => window.print());
 
 // ---------- New: Scope toggle + By Course + Leveling wire-up ----------
 $$('#report-scope .opt').forEach(o => o.addEventListener('click', () => {
@@ -1932,8 +1949,6 @@ $$('#lev-btns .lev-btn').forEach(b => b.addEventListener('click', () => {
   const el = document.getElementById(id);
   if (el) el.addEventListener('change', drawReport);
 });
-document.getElementById('bc-btn-print')?.addEventListener('click', () => window.print());
-document.getElementById('lev-btn-print')?.addEventListener('click', () => window.print());
 document.getElementById('lev-comparison-add')?.addEventListener('change', function() {
   if (this.value && state.comparisonCourses.length < 4) {
     state.comparisonCourses.push(this.value);
@@ -2495,29 +2510,6 @@ async function downloadWorkbook(workbook, filename) {
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 
-document.getElementById('btn-xlsx-one').addEventListener('click', async () => {
-  const domainVal = $('#report-domain').value;
-  const showFilter = $('#report-show').value;
-  if (domainVal === 'all') {
-    alert('Pick a single domain in the Domain dropdown to export just one. Use the "Export all domains" button to get every domain in one file.');
-    return;
-  }
-  const domain = DATA.domains.find(d => d.DomainNumber === +domainVal);
-  const wb = new ExcelJS.Workbook();
-  wb.creator = 'Curriculum Mapping App';
-  wb.created = new Date();
-  buildDomainSheet(wb, domain, showFilter);
-  await downloadWorkbook(wb, `Curriculum_Map_Domain_${domain.DomainNumber}_${new Date().toISOString().slice(0,10)}.xlsx`);
-});
-
-document.getElementById('btn-xlsx-all').addEventListener('click', async () => {
-  const showFilter = $('#report-show').value;
-  const wb = new ExcelJS.Workbook();
-  wb.creator = 'Curriculum Mapping App';
-  wb.created = new Date();
-  for (const d of DATA.domains) buildDomainSheet(wb, d, showFilter);
-  await downloadWorkbook(wb, `Curriculum_Map_All_Domains_${new Date().toISOString().slice(0,10)}.xlsx`);
-});
 
 // ============================================================
 // V2 Excel exports — By Course + 4 Leveling reports
@@ -2866,34 +2858,6 @@ function buildBreadthWorkbook(wb) {
 }
 
 // --- Wire up Excel buttons (By Course + Leveling) ---
-document.getElementById('bc-btn-xlsx')?.addEventListener('click', async () => {
-  const courseName = $('#bc-course').value;
-  if (!courseName) return;
-  const c = DATA.courses.find(x => x.CourseName === courseName);
-  const showFilter = $('#bc-show').value;
-  const wb = new ExcelJS.Workbook();
-  wb.creator = 'Curriculum Mapping App';
-  wb.created = new Date();
-  buildByCourseSheet(wb, courseName, showFilter);
-  const slug = courseName.replace(/[^A-Za-z0-9]/g, '_');
-  await downloadWorkbook(wb, `Curriculum_Map_${slug}_${new Date().toISOString().slice(0,10)}.xlsx`);
-});
-
-document.getElementById('lev-btn-xlsx')?.addEventListener('click', async () => {
-  const wb = new ExcelJS.Workbook();
-  wb.creator = 'Curriculum Mapping App';
-  wb.created = new Date();
-  const date = new Date().toISOString().slice(0,10);
-  let filename = '';
-  switch (state.reportLeveling) {
-    case 'progression': buildProgressionWorkbook(wb); filename = `Leveling_Progression_${date}.xlsx`; break;
-    case 'heatmap':     buildHeatmapWorkbook(wb);     filename = `Leveling_Heatmap_${state.heatmapDomain === 'all' ? 'AllDomains' : 'D' + state.heatmapDomain}_${date}.xlsx`; break;
-    case 'comparisons': buildComparisonsWorkbook(wb); filename = `Leveling_Course_Comparisons_${date}.xlsx`; break;
-    case 'breadth':     buildBreadthWorkbook(wb);     filename = `Leveling_Domain_Breadth_${date}.xlsx`; break;
-  }
-  if (wb.worksheets.length === 0) return; // empty (e.g. comparisons with <2 courses)
-  await downloadWorkbook(wb, filename);
-});
 
 // ===================================================================
 // REPORTS — Word document exports
@@ -3028,22 +2992,182 @@ async function downloadWordCourseReport(courseName, includeSubComps) {
   URL.revokeObjectURL(a.href);
 }
 
-document.getElementById('bc-btn-word-one')?.addEventListener('click', async () => {
-  const courseName = $('#bc-course').value;
-  if (!courseName) return;
-  await downloadWordCourseReport(courseName, false);
+
+// ---------- Downloads dropdown: toggle + unified dispatcher ----------
+document.querySelectorAll('.dl-btn').forEach(btn => {
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    const panel = btn.nextElementSibling;
+    const wasOpen = panel.classList.contains('open');
+    document.querySelectorAll('.dl-panel.open').forEach(p => p.classList.remove('open'));
+    if (!wasOpen) panel.classList.add('open');
+  });
 });
-document.getElementById('bc-btn-word-all')?.addEventListener('click', async () => {
-  await downloadWordCourseReport(null, false);
+document.addEventListener('click', e => {
+  if (!e.target.closest('.dl-dropdown'))
+    document.querySelectorAll('.dl-panel.open').forEach(p => p.classList.remove('open'));
+  const item = e.target.closest('.dl-panel-item[data-action]');
+  if (!item) return;
+  document.querySelectorAll('.dl-panel.open').forEach(p => p.classList.remove('open'));
+  handleDownload(item.dataset.action);
 });
-document.getElementById('bc-btn-wordsubs-one')?.addEventListener('click', async () => {
-  const courseName = $('#bc-course').value;
-  if (!courseName) return;
-  await downloadWordCourseReport(courseName, true);
-});
-document.getElementById('bc-btn-wordsubs-all')?.addEventListener('click', async () => {
-  await downloadWordCourseReport(null, true);
-});
+
+async function handleDownload(action) {
+  const courseName = $('#bc-course')?.value || null;
+  const showFilter = $('#bc-show')?.value || 'all';
+  const domainShowFilter = $('#report-show')?.value || 'all';
+  const date = new Date().toISOString().slice(0, 10);
+  switch (action) {
+    case 'xlsx-one': {
+      const domainVal = $('#report-domain').value;
+      if (domainVal === 'all') { alert('Pick a specific domain to export just one, or use "Excel Map — all domains".'); return; }
+      const domain = DATA.domains.find(d => d.DomainNumber === +domainVal);
+      const wb = new ExcelJS.Workbook(); wb.creator = 'Curriculum Mapping App'; wb.created = new Date();
+      buildDomainSheet(wb, domain, domainShowFilter);
+      await downloadWorkbook(wb, `Curriculum_Map_Domain_${domain.DomainNumber}_${date}.xlsx`);
+      break;
+    }
+    case 'xlsx-all': {
+      const wb = new ExcelJS.Workbook(); wb.creator = 'Curriculum Mapping App'; wb.created = new Date();
+      for (const d of DATA.domains) buildDomainSheet(wb, d, domainShowFilter);
+      await downloadWorkbook(wb, `Curriculum_Map_All_Domains_${date}.xlsx`);
+      break;
+    }
+    case 'bc-xlsx-one': {
+      if (!courseName) { alert('Please select a specific course first.'); return; }
+      const wb = new ExcelJS.Workbook(); wb.creator = 'Curriculum Mapping App'; wb.created = new Date();
+      buildByCourseSheet(wb, courseName, showFilter);
+      await downloadWorkbook(wb, `Curriculum_Map_${courseName.replace(/[^A-Za-z0-9]/g, '_')}_${date}.xlsx`);
+      break;
+    }
+    case 'bc-xlsx-all': {
+      const wb = new ExcelJS.Workbook(); wb.creator = 'Curriculum Mapping App'; wb.created = new Date();
+      const sorted = [...DATA.courses].sort((a, b) => (a.Semester || 99) - (b.Semester || 99) || a.CourseName.localeCompare(b.CourseName));
+      for (const c of sorted) buildByCourseSheet(wb, c.CourseName, 'all');
+      await downloadWorkbook(wb, `Curriculum_Map_All_Courses_${date}.xlsx`);
+      break;
+    }
+    case 'bc-word-eval-one':
+      if (!courseName) { alert('Please select a specific course first.'); return; }
+      await downloadWordCourseReport(courseName, false); break;
+    case 'bc-word-eval-all':
+      await downloadWordCourseReport(null, false); break;
+    case 'bc-word-subs-one':
+      if (!courseName) { alert('Please select a specific course first.'); return; }
+      await downloadWordCourseReport(courseName, true); break;
+    case 'bc-word-subs-all':
+      await downloadWordCourseReport(null, true); break;
+    case 'bc-word-concepts-one':
+      if (!courseName) { alert('Please select a specific course first.'); return; }
+      await downloadWordCourseConceptReport(courseName); break;
+    case 'bc-word-concepts-all':
+      await downloadWordCourseConceptReport(null); break;
+    case 'lev-xlsx': {
+      const wb = new ExcelJS.Workbook(); wb.creator = 'Curriculum Mapping App'; wb.created = new Date();
+      let filename = '';
+      switch (state.reportLeveling) {
+        case 'progression': buildProgressionWorkbook(wb); filename = `Leveling_Progression_${date}.xlsx`; break;
+        case 'heatmap':     buildHeatmapWorkbook(wb);     filename = `Leveling_Heatmap_${state.heatmapDomain === 'all' ? 'AllDomains' : 'D' + state.heatmapDomain}_${date}.xlsx`; break;
+        case 'comparisons': buildComparisonsWorkbook(wb); filename = `Leveling_Course_Comparisons_${date}.xlsx`; break;
+        case 'breadth':     buildBreadthWorkbook(wb);     filename = `Leveling_Domain_Breadth_${date}.xlsx`; break;
+      }
+      if (wb.worksheets.length === 0) return;
+      await downloadWorkbook(wb, filename);
+      break;
+    }
+  }
+}
+
+// ---------- Word: CO + Concepts + Topics + Eval ----------
+async function downloadWordCourseConceptReport(courseName) {
+  if (typeof docx === 'undefined') { alert('Word library not loaded. Please check your connection and try again.'); return; }
+  const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType } = docx;
+  const border = { style: 'single', size: 4, color: 'aaaaaa' };
+  const allBorders = { top: border, bottom: border, left: border, right: border };
+  const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+  const courses = courseName
+    ? [DATA.courses.find(c => c.CourseName === courseName)].filter(Boolean)
+    : [...DATA.courses].sort((a, b) => (a.Semester || 99) - (b.Semester || 99) || a.CourseName.localeCompare(b.CourseName));
+
+  const pageMargin = { top: 1440, bottom: 1296, left: 1440, right: 1440 };
+  const contentWidth = 9360;
+  // # | Course Outcome | Concepts | Topics | Evaluation
+  const colWidths = [280, 2800, 1680, 2300, 2300];
+
+  const allChildren = [];
+
+  courses.forEach((course, idx) => {
+    const outcomes = DATA.courseOutcomes.filter(o => o.Course === course.CourseName);
+
+    allChildren.push(new Paragraph({
+      pageBreakBefore: idx > 0,
+      children: [new TextRun({ text: course.CourseName, bold: true, size: 34 })],
+      spacing: { after: 100 }
+    }));
+    allChildren.push(new Paragraph({
+      children: [new TextRun({ text: `${course.Credits ?? 3} credit${course.Credits === 1 ? '' : 's'}`, size: 20, color: '333333' })],
+      spacing: { after: 240 }
+    }));
+
+    const mkHdr = (text, width) => new TableCell({
+      width: { size: width, type: WidthType.DXA }, borders: allBorders,
+      children: [new Paragraph({ children: [new TextRun({ text, bold: true, size: 18 })] })]
+    });
+    const headerRow = new TableRow({ tableHeader: true, children: [
+      new TableCell({ width: { size: colWidths[0], type: WidthType.DXA }, borders: allBorders,
+        children: [new Paragraph({ alignment: 'center', children: [new TextRun({ text: '#', bold: true, size: 18 })] })] }),
+      mkHdr('Course Outcome', colWidths[1]),
+      mkHdr('Concepts',       colWidths[2]),
+      mkHdr('Topics',         colWidths[3]),
+      mkHdr('Evaluation',     colWidths[4]),
+    ]});
+
+    const dataRows = outcomes.map((o, i) => {
+      const meta = getOutcomeMeta(course.CourseName, o.OutcomeText);
+      const conceptText = (meta.concepts || []).join(', ');
+      const topicsText  = meta.topics      || '';
+      const evalText    = meta.evaluation  || '';
+
+      const mkCell = (text, width) => new TableCell({
+        width: { size: width, type: WidthType.DXA }, borders: allBorders,
+        children: [new Paragraph({ children: [new TextRun({
+          text: text || 'Not yet entered', size: 19,
+          italics: !text, color: text ? '000000' : 'aaaaaa'
+        })] })]
+      });
+
+      return new TableRow({ children: [
+        new TableCell({ width: { size: colWidths[0], type: WidthType.DXA }, borders: allBorders,
+          children: [new Paragraph({ alignment: 'center', children: [new TextRun({ text: String(i + 1), bold: true, size: 19 })] })] }),
+        mkCell(o.OutcomeText, colWidths[1]),
+        mkCell(conceptText,   colWidths[2]),
+        mkCell(topicsText,    colWidths[3]),
+        mkCell(evalText,      colWidths[4]),
+      ]});
+    });
+
+    allChildren.push(new Table({
+      width: { size: contentWidth, type: WidthType.DXA },
+      rows: [headerRow, ...dataRows]
+    }));
+    allChildren.push(new Paragraph({
+      children: [new TextRun({ text: `Curriculum Mapping  ·  Page ${idx + 1} of ${courses.length}  ·  Generated ${today}`, size: 16, color: '999999' })],
+      spacing: { before: 200 }
+    }));
+  });
+
+  const doc = new Document({
+    sections: [{ properties: { page: { size: { width: 12240, height: 15840 }, margin: pageMargin } }, children: allChildren }]
+  });
+  const blob = await Packer.toBlob(doc);
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  const slug = courseName ? courseName.replace(/[^A-Za-z0-9]/g, '_').slice(0, 40) : 'All_Courses';
+  a.download = `CO_Concepts_Report_${slug}_${new Date().toISOString().slice(0, 10)}.docx`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+}
 
 // ---------- Data / Backup-Restore ----------
 function renderData() {
