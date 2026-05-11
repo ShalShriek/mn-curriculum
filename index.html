@@ -528,36 +528,6 @@
   #screen-reports .dl-section-label:first-child { border-top:none; margin-top:0; padding-top:4px; }
   #screen-reports .dl-panel-item { padding:9px 14px; font-size:13px; color:var(--rp-fg-1); cursor:pointer; white-space:nowrap; }
   #screen-reports .dl-panel-item:hover { background:var(--brand-primary-pale); color:var(--brand-primary); }
-  /* PI Table */
-  #screen-reports .pi-course-heading { font-size:18px; font-weight:700; color:var(--brand-primary); margin-bottom:4px; }
-  #screen-reports .pi-course-sub { font-size:13px; color:var(--rp-fg-3); margin-bottom:16px; }
-  #screen-reports .pi-course-sep { border:none; border-top:1px solid var(--rp-stroke); margin:28px 0; }
-  #screen-reports .pi-legend-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; font-size:13px; font-weight:600; color:var(--rp-fg-2); }
-  #screen-reports .pi-legend-badge { padding:3px 14px; border-radius:3px; font-size:12px; font-weight:700; background:#d0eaf2; color:#0d3d4d; border:1px solid #b0d8e8; }
-  #screen-reports .pi-table { width:100%; border-collapse:collapse; font-size:13.5px; }
-  #screen-reports .pi-table td, #screen-reports .pi-table th { padding:8px 11px; border:1px solid #c8d8dc; vertical-align:top; }
-  #screen-reports .pi-table .pi-group-row td { background:#1a7a9a; color:#fff; font-weight:700; font-size:14px; border-color:#1a7a9a; padding:10px 12px; }
-  #screen-reports .pi-table .pi-pi-header th { background:#d0eaf2; color:#0d3d4d; font-weight:700; font-size:13px; border-color:#b0d8e8; text-align:center; padding:7px 12px; }
-  #screen-reports .pi-table .pi-pi-header th:first-child { background:transparent; border-color:#c8d8dc; }
-  #screen-reports .pi-table .pi-col-row th { background:#f0f7fa; color:#0d3d4d; font-weight:700; font-size:12.5px; border-color:#b0d8e8; text-align:left; padding:7px 11px; }
-  #screen-reports .pi-table .pi-col-row th:first-child { width:28%; }
-  #screen-reports .pi-table .pi-col-row th:nth-child(2), #screen-reports .pi-table .pi-col-row th:nth-child(3) { width:36%; }
-  #screen-reports .pi-table .pi-data-row td { background:#fff; }
-  #screen-reports .pi-table .pi-data-row:nth-child(odd) td { background:#fafcfd; }
-  #screen-reports .pi-sub-cell { font-size:13.5px; color:var(--rp-fg-1); }
-  #screen-reports .pi-sub-cell strong { font-weight:700; }
-  #screen-reports .pi-bullets { list-style:none; padding:0; margin:0; }
-  #screen-reports .pi-bullets li { font-size:13px; color:var(--rp-fg-1); padding:3px 0 3px 14px; position:relative; line-height:1.45; }
-  #screen-reports .pi-bullets li::before { content:"•"; position:absolute; left:2px; color:#1a7a9a; font-size:15px; line-height:1.3; }
-  #screen-reports .pi-empty-msg { font-size:13px; color:var(--rp-fg-3); font-style:italic; padding:24px 0; text-align:center; }
-  #screen-reports .pi-sem-accordion { background:#fff; border:1px solid var(--rp-stroke); border-radius:6px; margin-bottom:8px; box-shadow:0 1px 2px rgba(0,0,0,.06); overflow:hidden; }
-  #screen-reports .pi-sem-summary { list-style:none; padding:12px 16px; font-size:14px; font-weight:600; color:var(--rp-fg-1); cursor:pointer; background:#fff; display:flex; align-items:center; gap:10px; user-select:none; transition:background .1s; }
-  #screen-reports .pi-sem-summary:hover { background:#f5f5f5; }
-  #screen-reports .pi-sem-summary::-webkit-details-marker { display:none; }
-  #screen-reports .pi-sem-summary::before { content:''; display:inline-block; width:16px; height:16px; flex-shrink:0; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='M5.5 3.5l5 4.5-5 4.5' stroke='%23424242' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:center; transition:transform .15s; }
-  #screen-reports details[open] > .pi-sem-summary::before { transform:rotate(90deg); }
-  #screen-reports .pi-sem-count { font-size:12px; font-weight:400; color:var(--rp-fg-3); margin-left:auto; }
-  #screen-reports .pi-sem-body { padding:0 20px 20px; border-top:1px solid var(--rp-stroke); }
 </style>
 </head>
 <body>
@@ -717,7 +687,6 @@
           <div class="scope-toggle" id="report-scope">
             <span class="opt active" data-scope="domain">By Domain</span>
             <span class="opt" data-scope="course">By Course</span>
-            <span class="opt" data-scope="pi">Progression Indicators</span>
             <span class="opt" data-scope="leveling">Leveling</span>
           </div>
         </div>
@@ -784,34 +753,18 @@
                 <div class="dl-panel-item" data-action="bc-word-eval-one">📄 Word: CO + Eval</div>
                 <div class="dl-panel-item" data-action="bc-word-subs-one">📄 Word: CO + Eval + Sub-comps</div>
                 <div class="dl-panel-item" data-action="bc-word-concepts-one">📄 Word: CO + Concepts + Topics + Eval</div>
+                <div class="dl-panel-item" data-action="bc-word-domaincomp-one">📄 Word: Domain + Comp</div>
                 <div class="dl-section-label">All Courses</div>
                 <div class="dl-panel-item" data-action="bc-xlsx-all">📊 Excel Map</div>
                 <div class="dl-panel-item" data-action="bc-word-eval-all">📄 Word: CO + Eval</div>
                 <div class="dl-panel-item" data-action="bc-word-subs-all">📄 Word: CO + Eval + Sub-comps</div>
                 <div class="dl-panel-item" data-action="bc-word-concepts-all">📄 Word: CO + Concepts + Topics + Eval</div>
+                <div class="dl-panel-item" data-action="bc-word-domaincomp-all">📄 Word: Domain + Comp</div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Progression Indicators panel -->
-        <div id="scope-pi-controls" class="report-controls rp-panel hidden">
-          <div class="rp-field">
-            <label for="pi-course">Course</label>
-            <select id="pi-course" class="rp-select" style="min-width:320px"><option value="">All Courses</option></select>
-          </div>
-          <div class="rp-actions">
-            <div class="dl-dropdown" id="dl-pi">
-              <button class="dl-btn">⬇ Downloads</button>
-              <div class="dl-panel">
-                <div class="dl-section-label">This Course</div>
-                <div class="dl-panel-item" data-action="pi-word-one">📄 Word: PI Table (landscape)</div>
-                <div class="dl-section-label">All Courses</div>
-                <div class="dl-panel-item" data-action="pi-word-all">📄 Word: PI Table — all courses (landscape)</div>
-              </div>
-            </div>
-          </div>
-        </div>
 
         <!-- Leveling panel -->
         <div id="scope-leveling-controls" class="report-controls rp-panel rp-panel-vert hidden">
@@ -1753,8 +1706,6 @@ function renderReports() {
     sorted.map(c => `<option value="${escapeHtml(c.CourseName)}">${escapeHtml(c.CourseName)} · S${c.Semester}</option>`).join('');
   const bcSel = $('#bc-course');
   if (bcSel && bcSel.options.length <= 1) bcSel.innerHTML = courseOptHtml;
-  const piSel = $('#pi-course');
-  if (piSel && piSel.options.length <= 1) piSel.innerHTML = courseOptHtml;
   // Populate "Add a course" dropdown for Course Comparisons (excludes already-picked)
   refreshComparisonsAddDropdown();
   // Populate Heatmap domain filter once
@@ -1777,7 +1728,6 @@ function renderReports() {
 function applyScopeVisibility() {
   $('#scope-domain-controls').classList.toggle('hidden', state.reportScope !== 'domain');
   $('#scope-course-controls').classList.toggle('hidden', state.reportScope !== 'course');
-  $('#scope-pi-controls').classList.toggle('hidden', state.reportScope !== 'pi');
   $('#scope-leveling-controls').classList.toggle('hidden', state.reportScope !== 'leveling');
   $$('#report-scope .opt').forEach(o => o.classList.toggle('active', o.dataset.scope === state.reportScope));
   $$('#lev-btns .lev-btn').forEach(b => b.classList.toggle('selected', b.dataset.lev === state.reportLeveling));
@@ -1817,7 +1767,6 @@ function refreshComparisonsAddDropdown() {
 function drawReport() {
   // Dispatch based on selected scope
   if (state.reportScope === 'course')   return drawByCourseReport();
-  if (state.reportScope === 'pi')       return drawPITableReport();
   if (state.reportScope === 'leveling') return drawLevelingReport();
   return drawByDomainReport();  // default
 }
@@ -2004,7 +1953,6 @@ $$('#lev-btns .lev-btn').forEach(b => b.addEventListener('click', () => {
   const el = document.getElementById(id);
   if (el) el.addEventListener('change', drawReport);
 });
-document.getElementById('pi-course')?.addEventListener('change', drawReport);
 document.getElementById('lev-comparison-add')?.addEventListener('change', function() {
   if (this.value && state.comparisonCourses.length < 4) {
     state.comparisonCourses.push(this.value);
@@ -2199,80 +2147,6 @@ function renderByCourseMatrixDomain(domain, subs, courseName, showFilter, summar
   return `<section class="report-domain"><h3>Domain ${domain.DomainNumber} — ${escapeHtml(domain.DomainName)}</h3><div class="summary">${summary}</div><div class="report-matrix-wrap"><table class="report-matrix-excel"><thead>${headerRow}</thead><tbody>${bodyRows}</tbody></table></div></section>`;
 }
 
-// --- Progression Indicators Table ---
-function drawPITableReport() {
-  const courseVal = $('#pi-course')?.value || '';
-  const canvas = $('#report-canvas');
-  if (courseVal) {
-    const courses = [DATA.courses.find(c => c.CourseName === courseVal)].filter(Boolean);
-    if (courses.length === 0) { canvas.innerHTML = '<p class="pi-empty-msg">No courses found.</p>'; return; }
-    canvas.innerHTML = courses.map((course, ci) => renderPICourseSection(course, ci > 0)).join('');
-  } else {
-    const bySem = {};
-    [...DATA.courses]
-      .sort((a, b) => (a.Semester || 99) - (b.Semester || 99) || a.CourseName.localeCompare(b.CourseName))
-      .forEach(c => { const s = c.Semester || 99; (bySem[s] ??= []).push(c); });
-    const semKeys = Object.keys(bySem).map(Number).sort((a, b) => a - b);
-    if (semKeys.length === 0) { canvas.innerHTML = '<p class="pi-empty-msg">No courses found.</p>'; return; }
-    canvas.innerHTML = semKeys.map(sem => {
-      const semCourses = bySem[sem];
-      const label = SEM_LABEL[sem] || `Semester ${sem}`;
-      const body = semCourses.map((course, ci) => renderPICourseSection(course, ci > 0)).join('');
-      return `<details class="pi-sem-accordion">
-        <summary class="pi-sem-summary">${escapeHtml(label)}<span class="pi-sem-count">${semCourses.length} course${semCourses.length !== 1 ? 's' : ''}</span></summary>
-        <div class="pi-sem-body">${body}</div>
-      </details>`;
-    }).join('');
-  }
-}
-
-function renderPICourseSection(course, addSep) {
-  const courseName = course.CourseName;
-  const mappedCodes = new Set(
-    state.mappings.filter(m => m.Course === courseName && m.SubCompetencyCode).map(m => m.SubCompetencyCode)
-  );
-  const sepHtml = addSep ? '<hr class="pi-course-sep">' : '';
-  const heading = `<div class="pi-course-heading">${escapeHtml(courseName)}</div>`;
-  if (mappedCodes.size === 0) {
-    return `${sepHtml}${heading}<div class="pi-course-sub">Semester ${course.Semester || '?'}</div><p class="pi-empty-msg">No sub-competencies mapped for this course yet.</p>`;
-  }
-  // Only leaf sub-comps that are mapped AND have PI data
-  const leafsWithPI = DATA.subCompetencies.filter(s => !s.IsParent && mappedCodes.has(s.Code) && Array.isArray(s.pid));
-  // Group by parent, sorted by domain then parent code
-  const parentCodes = [...new Set(leafsWithPI.map(s => s.ParentCode))];
-  const parents = parentCodes
-    .map(pc => DATA.subCompetencies.find(s => s.IsParent && s.Code === pc))
-    .filter(Boolean)
-    .sort((a, b) => (a.Domain || 0) - (b.Domain || 0) || (a.Code || '').localeCompare(b.Code || ''));
-
-  const tableRows = parents.map(parent => {
-    const children = leafsWithPI.filter(s => s.ParentCode === parent.Code);
-    const dataRows = children.map(leaf => {
-      const pidHtml = leaf.pid && leaf.pid.length
-        ? `<ul class="pi-bullets">${leaf.pid.map(b => `<li>${escapeHtml(b)}</li>`).join('')}</ul>`
-        : '<span style="font-size:12px;color:#999;font-style:italic">—</span>';
-      const picHtml = leaf.pic && leaf.pic.length
-        ? `<ul class="pi-bullets">${leaf.pic.map(b => `<li>${escapeHtml(b)}</li>`).join('')}</ul>`
-        : '<span style="font-size:12px;color:#999;font-style:italic">—</span>';
-      return `<tr class="pi-data-row">
-        <td class="pi-sub-cell"><strong>${escapeHtml(leaf.Code)}</strong> ${escapeHtml(leaf.Text)}</td>
-        <td>${pidHtml}</td>
-        <td>${picHtml}</td>
-      </tr>`;
-    }).join('');
-    return `<tr class="pi-group-row"><td colspan="3"><strong>${escapeHtml(parent.Code)}</strong> &nbsp; ${escapeHtml(parent.Text)}</td></tr>
-      <tr class="pi-pi-header"><th></th><th colspan="2">Progression Indicators (Observable Behaviors)</th></tr>
-      <tr class="pi-col-row"><th>Sub-competency</th><th>Developing (Developing Competence)</th><th>Developed (Competent)</th></tr>
-      ${dataRows}`;
-  }).join('');
-
-  const domainSet = new Set(leafsWithPI.map(s => s.Domain).filter(Boolean));
-  const sub = `Semester ${course.Semester || '?'} &nbsp;·&nbsp; ${leafsWithPI.length} mapped sub-competencies across ${domainSet.size} domain${domainSet.size !== 1 ? 's' : ''}`;
-  return `${sepHtml}${heading}
-    <div class="pi-course-sub">${sub}</div>
-    <div class="pi-legend-row">Table Legend: &nbsp;<span class="pi-legend-badge">Level 1: Entry-Level</span></div>
-    <table class="pi-table">${tableRows}</table>`;
-}
 
 // --- Leveling: dispatcher ---
 function drawLevelingReport() {
@@ -3192,13 +3066,11 @@ async function handleDownload(action) {
       await downloadWordCourseConceptReport(courseName); break;
     case 'bc-word-concepts-all':
       await downloadWordCourseConceptReport(null); break;
-    case 'pi-word-one': {
-      const piCourse = $('#pi-course')?.value || null;
-      if (!piCourse) { alert('Please select a specific course first.'); return; }
-      await downloadWordPITable(piCourse); break;
-    }
-    case 'pi-word-all':
-      await downloadWordPITable(null); break;
+    case 'bc-word-domaincomp-one':
+      if (!courseName) { alert('Please select a specific course first.'); return; }
+      await downloadWordDomainCompReport(courseName); break;
+    case 'bc-word-domaincomp-all':
+      await downloadWordDomainCompReport(null); break;
     case 'lev-xlsx': {
       const wb = new ExcelJS.Workbook(); wb.creator = 'Curriculum Mapping App'; wb.created = new Date();
       let filename = '';
