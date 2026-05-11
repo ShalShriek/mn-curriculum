@@ -550,6 +550,14 @@
   #screen-reports .pi-bullets li { font-size:13px; color:var(--rp-fg-1); padding:3px 0 3px 14px; position:relative; line-height:1.45; }
   #screen-reports .pi-bullets li::before { content:"•"; position:absolute; left:2px; color:#1a7a9a; font-size:15px; line-height:1.3; }
   #screen-reports .pi-empty-msg { font-size:13px; color:var(--rp-fg-3); font-style:italic; padding:24px 0; text-align:center; }
+  #screen-reports .pi-sem-accordion { background:#fff; border:1px solid var(--rp-stroke); border-radius:6px; margin-bottom:8px; box-shadow:0 1px 2px rgba(0,0,0,.06); overflow:hidden; }
+  #screen-reports .pi-sem-summary { list-style:none; padding:12px 16px; font-size:14px; font-weight:600; color:var(--rp-fg-1); cursor:pointer; background:#fff; display:flex; align-items:center; gap:10px; user-select:none; transition:background .1s; }
+  #screen-reports .pi-sem-summary:hover { background:#f5f5f5; }
+  #screen-reports .pi-sem-summary::-webkit-details-marker { display:none; }
+  #screen-reports .pi-sem-summary::before { content:''; display:inline-block; width:16px; height:16px; flex-shrink:0; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='M5.5 3.5l5 4.5-5 4.5' stroke='%23424242' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:center; transition:transform .15s; }
+  #screen-reports details[open] > .pi-sem-summary::before { transform:rotate(90deg); }
+  #screen-reports .pi-sem-count { font-size:12px; font-weight:400; color:var(--rp-fg-3); margin-left:auto; }
+  #screen-reports .pi-sem-body { padding:0 20px 20px; border-top:1px solid var(--rp-stroke); }
 </style>
 </head>
 <body>
@@ -1159,6 +1167,7 @@ else if (_adminParam === '0') localStorage.removeItem('cm_admin');
 const IS_ADMIN = localStorage.getItem('cm_admin') === '1';
 if (!IS_ADMIN) {
   document.querySelector('button[data-tab="data"]')?.classList.add('hidden');
+  document.querySelector('[data-scope="leveling"]')?.classList.add('hidden');
 }
 
 $$('.tab-btn').forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
@@ -1981,6 +1990,7 @@ function renderDomainMatrix(domain, subs, showFilter, summary) {
 
 // ---------- New: Scope toggle + By Course + Leveling wire-up ----------
 $$('#report-scope .opt').forEach(o => o.addEventListener('click', () => {
+  if (o.dataset.scope === 'leveling' && !IS_ADMIN) return;
   state.reportScope = o.dataset.scope;
   applyScopeVisibility();
   drawReport();
@@ -2193,11 +2203,27 @@ function renderByCourseMatrixDomain(domain, subs, courseName, showFilter, summar
 function drawPITableReport() {
   const courseVal = $('#pi-course')?.value || '';
   const canvas = $('#report-canvas');
-  const courses = courseVal
-    ? [DATA.courses.find(c => c.CourseName === courseVal)].filter(Boolean)
-    : [...DATA.courses].sort((a, b) => (a.Semester || 99) - (b.Semester || 99) || a.CourseName.localeCompare(b.CourseName));
-  if (courses.length === 0) { canvas.innerHTML = '<p class="pi-empty-msg">No courses found.</p>'; return; }
-  canvas.innerHTML = courses.map((course, ci) => renderPICourseSection(course, ci > 0)).join('');
+  if (courseVal) {
+    const courses = [DATA.courses.find(c => c.CourseName === courseVal)].filter(Boolean);
+    if (courses.length === 0) { canvas.innerHTML = '<p class="pi-empty-msg">No courses found.</p>'; return; }
+    canvas.innerHTML = courses.map((course, ci) => renderPICourseSection(course, ci > 0)).join('');
+  } else {
+    const bySem = {};
+    [...DATA.courses]
+      .sort((a, b) => (a.Semester || 99) - (b.Semester || 99) || a.CourseName.localeCompare(b.CourseName))
+      .forEach(c => { const s = c.Semester || 99; (bySem[s] ??= []).push(c); });
+    const semKeys = Object.keys(bySem).map(Number).sort((a, b) => a - b);
+    if (semKeys.length === 0) { canvas.innerHTML = '<p class="pi-empty-msg">No courses found.</p>'; return; }
+    canvas.innerHTML = semKeys.map(sem => {
+      const semCourses = bySem[sem];
+      const label = SEM_LABEL[sem] || `Semester ${sem}`;
+      const body = semCourses.map((course, ci) => renderPICourseSection(course, ci > 0)).join('');
+      return `<details class="pi-sem-accordion">
+        <summary class="pi-sem-summary">${escapeHtml(label)}<span class="pi-sem-count">${semCourses.length} course${semCourses.length !== 1 ? 's' : ''}</span></summary>
+        <div class="pi-sem-body">${body}</div>
+      </details>`;
+    }).join('');
+  }
 }
 
 function renderPICourseSection(course, addSep) {
@@ -3002,8 +3028,8 @@ async function downloadWordCourseReport(courseName, includeSubComps) {
 
   // Column widths in DXA
   const colWidths = includeSubComps
-    ? [360, 2720, 2160, 8440]   // #, CO, Eval, Sub-comps (landscape 13680 total)
-    : [360, 9360 - 360 - 3000, 3000];  // #, CO, Eval (portrait)
+    ? [3080, 2160, 8440]   // CO, Eval, Sub-comps (landscape 13680 total)
+    : [6360, 3000];        // CO, Eval (portrait)
 
   const allChildren = [];
 
@@ -3026,14 +3052,12 @@ async function downloadWordCourseReport(courseName, includeSubComps) {
     // Header row
     const headerCells = [
       new TableCell({ width: { size: colWidths[0], type: WidthType.DXA }, borders: allBorders,
-        children: [new Paragraph({ alignment: 'center', children: [new TextRun({ text: '#', bold: true, size: 18 })] })] }),
-      new TableCell({ width: { size: colWidths[1], type: WidthType.DXA }, borders: allBorders,
         children: [new Paragraph({ children: [new TextRun({ text: 'Course Outcome', bold: true, size: 18 })] })] }),
-      new TableCell({ width: { size: colWidths[2], type: WidthType.DXA }, borders: allBorders,
+      new TableCell({ width: { size: colWidths[1], type: WidthType.DXA }, borders: allBorders,
         children: [new Paragraph({ children: [new TextRun({ text: 'Evaluation', bold: true, size: 18 })] })] })
     ];
     if (includeSubComps) headerCells.push(
-      new TableCell({ width: { size: colWidths[3], type: WidthType.DXA }, borders: allBorders,
+      new TableCell({ width: { size: colWidths[2], type: WidthType.DXA }, borders: allBorders,
         children: [new Paragraph({ children: [new TextRun({ text: 'Competency / Sub-competencies', bold: true, size: 18 })] })] })
     );
 
@@ -3042,10 +3066,8 @@ async function downloadWordCourseReport(courseName, includeSubComps) {
       const evalText = getOutcomeMeta(course.CourseName, o.OutcomeText).evaluation || '';
       const cells = [
         new TableCell({ width: { size: colWidths[0], type: WidthType.DXA }, borders: allBorders,
-          children: [new Paragraph({ alignment: 'center', children: [new TextRun({ text: String(i + 1), bold: true, size: 19 })] })] }),
+          children: [new Paragraph({ children: [new TextRun({ text: `${i + 1}. ${o.OutcomeText}`, size: 19 })], spacing: { after: includeSubComps ? 0 : 240 } })] }),
         new TableCell({ width: { size: colWidths[1], type: WidthType.DXA }, borders: allBorders,
-          children: [new Paragraph({ children: [new TextRun({ text: o.OutcomeText, size: 19 })] })] }),
-        new TableCell({ width: { size: colWidths[2], type: WidthType.DXA }, borders: allBorders,
           children: [new Paragraph({ children: [new TextRun({ text: evalText || 'Not yet entered', size: 19, italics: !evalText, color: evalText ? '000000' : 'aaaaaa' })] })] })
       ];
       if (includeSubComps) {
@@ -3053,19 +3075,19 @@ async function downloadWordCourseReport(courseName, includeSubComps) {
         const subParas = [];
         groups.forEach(g => {
           subParas.push(new Paragraph({
-            children: [new TextRun({ text: g.parentCode + '  ', bold: true, font: 'Courier New', size: 14 }),
-                       new TextRun({ text: g.parentText, bold: true, size: 14 })],
+            children: [new TextRun({ text: g.parentCode + '  ', bold: true, font: 'Courier New', size: 19 }),
+                       new TextRun({ text: g.parentText, bold: true, size: 19 })],
             spacing: { after: 40 }
           }));
           g.leaves.forEach(l => subParas.push(new Paragraph({
             indent: { left: 100 },
-            children: [new TextRun({ text: l.code + '  ', bold: true, font: 'Courier New', size: 14 }),
-                       new TextRun({ text: l.text, size: 14, color: '222222' })],
+            children: [new TextRun({ text: l.code + '  ', bold: true, font: 'Courier New', size: 19 }),
+                       new TextRun({ text: l.text, size: 19, color: '222222' })],
             spacing: { after: 20 }
           })));
         });
-        cells.push(new TableCell({ width: { size: colWidths[3], type: WidthType.DXA }, borders: allBorders,
-          children: subParas.length ? subParas : [new Paragraph({ children: [new TextRun({ text: '', size: 14 })] })] }));
+        cells.push(new TableCell({ width: { size: colWidths[2], type: WidthType.DXA }, borders: allBorders,
+          children: subParas.length ? subParas : [new Paragraph({ children: [new TextRun({ text: '', size: 19 })] })] }));
       }
       return new TableRow({ children: cells });
     });
@@ -3207,8 +3229,8 @@ async function downloadWordCourseConceptReport(courseName) {
 
   const pageMargin = { top: 1440, bottom: 1440, left: 1440, right: 1440 };
   const contentWidth = 12960; // landscape: 15840 - 2*1440
-  // # | Course Outcome | Concepts | Topics | Evaluation
-  const colWidths = [400, 3900, 2300, 3180, 3180];
+  // Course Outcome | Concepts | Topics | Evaluation
+  const colWidths = [4300, 2300, 3180, 3180];
 
   const allChildren = [];
 
@@ -3230,12 +3252,10 @@ async function downloadWordCourseConceptReport(courseName) {
       children: [new Paragraph({ children: [new TextRun({ text, bold: true, size: 18 })] })]
     });
     const headerRow = new TableRow({ tableHeader: true, children: [
-      new TableCell({ width: { size: colWidths[0], type: WidthType.DXA }, borders: allBorders,
-        children: [new Paragraph({ alignment: 'center', children: [new TextRun({ text: '#', bold: true, size: 18 })] })] }),
-      mkHdr('Course Outcome', colWidths[1]),
-      mkHdr('Concepts',       colWidths[2]),
-      mkHdr('Topics',         colWidths[3]),
-      mkHdr('Evaluation',     colWidths[4]),
+      mkHdr('Course Outcome', colWidths[0]),
+      mkHdr('Concepts',       colWidths[1]),
+      mkHdr('Topics',         colWidths[2]),
+      mkHdr('Evaluation',     colWidths[3]),
     ]});
 
     const dataRows = outcomes.map((o, i) => {
@@ -3244,21 +3264,19 @@ async function downloadWordCourseConceptReport(courseName) {
       const topicsText  = meta.topics      || '';
       const evalText    = meta.evaluation  || '';
 
-      const mkCell = (text, width) => new TableCell({
+      const mkCell = (text, width, spacingAfter = 0) => new TableCell({
         width: { size: width, type: WidthType.DXA }, borders: allBorders,
         children: [new Paragraph({ children: [new TextRun({
           text: text || 'Not yet entered', size: 19,
           italics: !text, color: text ? '000000' : 'aaaaaa'
-        })] })]
+        })], spacing: { after: spacingAfter } })]
       });
 
       return new TableRow({ children: [
-        new TableCell({ width: { size: colWidths[0], type: WidthType.DXA }, borders: allBorders,
-          children: [new Paragraph({ alignment: 'center', children: [new TextRun({ text: String(i + 1), bold: true, size: 19 })] })] }),
-        mkCell(o.OutcomeText, colWidths[1]),
-        mkCell(conceptText,   colWidths[2]),
-        mkCell(topicsText,    colWidths[3]),
-        mkCell(evalText,      colWidths[4]),
+        mkCell(`${i + 1}. ${o.OutcomeText}`, colWidths[0]),
+        mkCell(conceptText, colWidths[1]),
+        mkCell(topicsText,  colWidths[2], 240),
+        mkCell(evalText,    colWidths[3]),
       ]});
     });
 
