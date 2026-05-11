@@ -47,54 +47,42 @@
   .card-hover { transition: all 0.15s ease; }
   .card-hover:hover { box-shadow: 0 6px 18px rgba(146,0,59,0.18); border-color: var(--brand-accent); transform: translateY(-1px); }
 
-  /* ---------- Course tile (Option 3b: left-tab accent + course # above title + dual stat cells) ---------- */
+  /* ---------- Course tile — Fluent card: top-strip accent + inset stat grid ---------- */
   .tile-tab {
     background: #fff;
-    border: 1px solid var(--brand-cream);
-    border-left: 5px solid var(--brand-primary);
+    border: 1px solid #e8e8e8;
     border-radius: 8px;
-    padding: 12px 14px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    padding: 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
     text-align: left;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    grid-template-rows: auto auto auto;
-    column-gap: 8px;
-    row-gap: 2px;
+    display: flex; flex-direction: column; gap: 10px;
     cursor: pointer;
-    transition: box-shadow 0.12s, transform 0.06s;
+    transition: box-shadow .12s, transform .06s;
+    position: relative;
+    overflow: hidden;
   }
-  .tile-tab:hover { box-shadow: 0 4px 10px rgba(146,0,59,0.12); transform: translateY(-1px); }
-  .tile-tab .tile-num-line {
-    grid-column: 1 / 2; grid-row: 1 / 2;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 10.5px; font-weight: 700;
-    color: var(--brand-primary); letter-spacing: 0.04em;
+  .tile-tab::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--brand-primary);
   }
+  .tile-tab:hover { box-shadow: 0 4px 12px rgba(0,0,0,.12); transform: translateY(-1px); }
+  .tile-tab .tile-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 6px; }
+  .tile-tab .tile-name { font-size: 13px; font-weight: 600; line-height: 1.35; color: var(--brand-text); flex: 1; }
   .tile-tab .tile-credits {
-    grid-column: 2 / 3; grid-row: 1 / 2;
     font-size: 10px; font-weight: 600; color: var(--brand-muted);
     background: #f1ece1; padding: 2px 8px; border-radius: 9999px;
-    align-self: start; white-space: nowrap;
-  }
-  .tile-tab .tile-name {
-    grid-column: 1 / 3; grid-row: 2 / 3;
-    font-size: 13px; font-weight: 600; line-height: 1.3;
-    color: var(--brand-text); margin-top: -1px;
+    white-space: nowrap; flex-shrink: 0; align-self: flex-start;
   }
   .tile-tab .tile-stats {
-    grid-column: 1 / 3; grid-row: 3 / 4;
-    display: flex; align-items: stretch; gap: 0;
-    margin-top: 6px;
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    background: #f9f9f9; border-radius: 6px; border: 1px solid #ebebeb; overflow: hidden;
   }
-  .tile-tab .tile-stat-cell { display: flex; flex-direction: column; padding-right: 12px; }
-  .tile-tab .tile-stat-cell + .tile-stat-cell { padding-left: 12px; border-left: 1px solid var(--brand-cream); }
-  .tile-tab .tile-big {
-    font-size: 18px; font-weight: 700; color: var(--brand-primary); line-height: 1; margin-bottom: 2px;
+  .tile-tab .tile-stat-cell {
+    display: flex; flex-direction: column; align-items: center; padding: 8px 6px; gap: 2px;
   }
-  .tile-tab .tile-lbl {
-    font-size: 9.5px; color: var(--brand-muted); text-transform: uppercase; letter-spacing: 0.04em;
-  }
+  .tile-tab .tile-stat-cell + .tile-stat-cell { border-left: 1px solid #ebebeb; }
+  .tile-tab .tile-big { font-size: 19px; font-weight: 700; color: var(--brand-primary); line-height: 1; }
+  .tile-tab .tile-lbl { font-size: 9px; color: var(--brand-muted); text-transform: uppercase; letter-spacing: .05em; text-align: center; }
   input[type="checkbox"] { accent-color: var(--brand-primary); width: 16px; height: 16px; }
   .btn-link:hover { color: var(--brand-primary-dark); }
   .matrix-th { position: relative; }
@@ -1169,16 +1157,23 @@ function renderHome() {
     const grid = section.querySelector(`#sem-${s}-grid`);
     courses.forEach(c => {
       const ms = mappingsForCourse(c.CourseName);
-      const distinctSubs = new Set(ms.map(m => m.SubCompetencyCode)).size;
+      const mappedSubCodes = new Set(ms.map(m => m.SubCompetencyCode));
+      const mappedLeaves = DATA.subCompetencies.filter(s => !s.IsParent && mappedSubCodes.has(s.Code));
+      const distinctDomains = new Set(mappedLeaves.map(s => s.Domain)).size;
+      const distinctComps   = new Set(mappedLeaves.map(s => s.ParentCode)).size;
+      const distinctSubs    = mappedSubCodes.size;
       const card = document.createElement('button');
       card.className = 'tile-tab';
       const credits = c.Credits != null ? `${c.Credits} cr` : '';
       card.innerHTML = `
-        <div class="tile-num-line">&nbsp;</div>
-        ${credits ? `<div class="tile-credits">${escapeHtml(credits)}</div>` : ''}
-        <div class="tile-name">${escapeHtml(c.CourseName)}</div>
+        <div class="tile-header">
+          <div class="tile-name">${escapeHtml(c.CourseName)}</div>
+          ${credits ? `<div class="tile-credits">${escapeHtml(credits)}</div>` : ''}
+        </div>
         <div class="tile-stats">
-          <div class="tile-stat-cell"><span class="tile-big">${distinctSubs}</span><span class="tile-lbl">sub-comps</span></div>
+          <div class="tile-stat-cell"><span class="tile-big">${distinctDomains}</span><span class="tile-lbl">Domains</span></div>
+          <div class="tile-stat-cell"><span class="tile-big">${distinctComps}</span><span class="tile-lbl">Competencies</span></div>
+          <div class="tile-stat-cell"><span class="tile-big">${distinctSubs}</span><span class="tile-lbl">Sub-comps</span></div>
         </div>`;
       card.addEventListener('click', () => { state.selectedCourse = c.CourseName; state.selectedOutcome = null; switchTab('editor'); });
       grid.appendChild(card);
@@ -2971,11 +2966,6 @@ async function downloadWordCourseReport(courseName, includeSubComps) {
       rows: [new TableRow({ tableHeader: true, children: headerCells }), ...dataRows]
     }));
 
-    // Footer
-    allChildren.push(new Paragraph({
-      children: [new TextRun({ text: `Curriculum Mapping  ·  Page ${idx + 1} of ${courses.length}  ·  Generated ${today}`, size: 16, color: '999999' })],
-      spacing: { before: 200 }
-    }));
   });
 
   const pageSize = includeSubComps
@@ -3156,10 +3146,6 @@ async function downloadWordCourseConceptReport(courseName) {
       width: { size: contentWidth, type: WidthType.DXA },
       rows: [headerRow, ...dataRows]
     }));
-    allChildren.push(new Paragraph({
-      children: [new TextRun({ text: `Curriculum Mapping  ·  Page ${idx + 1} of ${courses.length}  ·  Generated ${today}`, size: 16, color: '999999' })],
-      spacing: { before: 200 }
-    }));
   });
 
   const doc = new Document({
@@ -3258,12 +3244,6 @@ async function downloadWordDomainCompReport(courseName) {
       });
     }
 
-    // Footer
-    allChildren.push(new Paragraph({
-      children: [new TextRun({ text: `Curriculum Mapping  ·  AACN Essentials 2021  ·  Generated ${today}  ·  Loyola University Chicago MN Program`, size: 16, color: '999999' })],
-      spacing: { before: 320 },
-      border: { top: { style: 'single', size: 4, color: 'e0e0e0' } }
-    }));
   });
 
   const doc = new Document({
